@@ -1,5 +1,15 @@
 use super::ast::{HexNumber, DecNumber, HexLiteral, StringLiteral, LinkerSymbol,
-                 Identifier, LabelDefinition, Assignment};
+                 Identifier, LabelDefinition, Assignment, IdentifierList};
+
+pub identifier_or_list -> IdentifierList
+  = __ i:identifier { IdentifierList::new(i, vec![]) }
+  / __ "(" is:identifier_list ")" { is }
+
+pub identifier_list -> IdentifierList
+  = __ i:identifier is:(identifier_list_clause*) { IdentifierList::new(i, is) }
+
+identifier_list_clause -> Identifier
+  = __ "," __ i:identifier { i }
 
 pub assignment -> Assignment
   = "=:" i:identifier  { Assignment::new(i) }

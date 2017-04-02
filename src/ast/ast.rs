@@ -9,6 +9,24 @@ extern crate rustc_serialize;
 use self::rustc_serialize::hex::FromHex;
 
 /*
+ * Identifier Lists
+ */
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+pub struct IdentifierList {
+    pub identifiers: Vec<Identifier>,
+}
+
+impl IdentifierList {
+    pub fn new(i: Identifier, is: Vec<Identifier>) -> IdentifierList {
+        let mut identifiers = vec![i];
+        identifiers.extend(is);
+
+        IdentifierList { identifiers: identifiers }
+    }
+}
+
+
+/*
  * Assignments/Labels
  */
 

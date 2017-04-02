@@ -1,10 +1,13 @@
 extern crate solasm;
 extern crate bigint;
+extern crate env_logger;
 use solasm::grammar::*;
 use bigint::U256;
 
+
 #[test]
 fn it_works() {
+    let _ = env_logger::init();
     assert_eq!(hex_number("0xFF").unwrap().uint, U256::from(255));
     assert_eq!(dec_number("10").unwrap().uint, U256::from(10));
     assert_eq!(string("\"10\"").unwrap().string, "10".to_string());
@@ -21,6 +24,17 @@ fn it_works() {
                "x".to_string());
     assert_eq!(assignment("=: x").unwrap().identifier.symbol,
                "x".to_string());
+
+    assert_eq!(identifier_list("x, y, z").unwrap().identifiers,
+               vec![identifier("x").unwrap(), identifier("y").unwrap(), identifier("z").unwrap()]);
+
+    assert_eq!(identifier_or_list("(x, y, z)").unwrap(),
+               identifier_list("x, y, z").unwrap());
+    assert_eq!(identifier_or_list("x").unwrap(),
+               identifier_list("x").unwrap());
+
+
+
 }
 
 #[test]
