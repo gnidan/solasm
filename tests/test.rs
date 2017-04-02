@@ -20,6 +20,8 @@ fn it_works() {
 
 #[test]
 fn it_ignores_comments() {
-    assert_eq!(hex_number("/* hex number */ 0xFF").unwrap().uint, U256::from(255));
-    assert_eq!(hex_number("// hex number\n 0xFF").unwrap().uint, U256::from(255));
+    assert_eq!(hex_number("/* hex number */ 0xFF").unwrap().uint,
+               U256::from(255));
+    assert_eq!(hex_number("// hex number\n 0xFF").unwrap().uint,
+               U256::from(255));
 }
