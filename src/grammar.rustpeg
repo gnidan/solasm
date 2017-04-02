@@ -1,6 +1,10 @@
 use super::ast::{HexNumber, DecNumber, HexLiteral, StringLiteral, LinkerSymbol,
                  Identifier, LabelDefinition, Assignment, Item,
-                 FunctionalExpression, LocalDefinition, FunctionalAssignment};
+                 FunctionalExpression, LocalDefinition, FunctionalAssignment,
+                 Block};
+
+pub block -> Block
+  = __ "{" items:(item*) { Block::new(items) }
 
 pub item -> Item
   = "break" { Item::Break() }
@@ -8,6 +12,7 @@ pub item -> Item
   / "errorLabel" { Item::ErrorLabel() }
   / "bytecodeSize" { Item::BytecodeSize() }
   / "dataSize" "(" i:identifier ")" { Item::DataSize(i) }
+  / b:block { Item::Block(b) }
   / d:local_definition { Item::LocalDefinition(d) }
   / a:functional_assignment { Item::FunctionalAssignment(a) }
   / e:functional_expression { Item::FunctionalExpression(e) }

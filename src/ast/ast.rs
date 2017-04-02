@@ -8,12 +8,28 @@ use self::bigint::{U256, Uint};
 extern crate rustc_serialize;
 use self::rustc_serialize::hex::FromHex;
 
+
+/*
+ * Block
+ */
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+pub struct Block {
+    pub items: Vec<Item>,
+}
+
+impl Block {
+    pub fn new(items: Vec<Item>) -> Block {
+        Block { items: items }
+    }
+}
+
 /*
  * Item
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub enum Item {
     Identifier(Identifier),
+    Block(Block),
     Assignment(Assignment),
     LabelDefinition(LabelDefinition),
     Break(),
