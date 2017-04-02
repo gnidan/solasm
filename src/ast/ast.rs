@@ -30,10 +30,17 @@ impl Block {
 pub enum Item {
     Identifier(Identifier),
     Block(Block),
+    FunctionalExpression(FunctionalExpression),
+    LocalDefinition(LocalDefinition),
+    FunctionalAssignment(FunctionalAssignment),
     Assignment(Assignment),
     LabelDefinition(LabelDefinition),
+    Switch(Switch),
+    FunctionDefinition(FunctionDefinition),
+    For(For),
     Break(),
     Continue(),
+    SubAssembly(SubAssembly),
     DataSize(Identifier),
     LinkerSymbol(LinkerSymbol),
     ErrorLabel(),
@@ -42,12 +49,15 @@ pub enum Item {
     StringLiteral(StringLiteral),
     HexNumber(HexNumber),
     DecNumber(DecNumber),
-    FunctionalExpression(FunctionalExpression),
-    LocalDefinition(LocalDefinition),
-    FunctionalAssignment(FunctionalAssignment),
-    SubAssembly(SubAssembly),
 }
 
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+pub enum Expression {
+    FunctionalExpression(FunctionalExpression),
+    HexNumber(HexNumber),
+    DecNumber(DecNumber),
+    StringLiteral(StringLiteral),
+}
 
 /*
  * Functional Expressions!
@@ -70,11 +80,11 @@ impl FunctionalExpression {
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct LocalDefinition {
     pub identifiers: Vec<Identifier>,
-    pub expression: FunctionalExpression,
+    pub expression: Expression,
 }
 
 impl LocalDefinition {
-    pub fn new(is: Vec<Identifier>, e: FunctionalExpression) -> LocalDefinition {
+    pub fn new(is: Vec<Identifier>, e: Expression) -> LocalDefinition {
         LocalDefinition {
             identifiers: is,
             expression: e,
@@ -97,6 +107,52 @@ impl FunctionalAssignment {
     }
 }
 
+
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+pub struct FunctionDefinition {
+    pub identifier: Identifier,
+    pub arguments: Vec<Identifier>,
+    pub returns: Option<Vec<Identifier>>,
+    pub block: Block,
+}
+
+impl FunctionDefinition {
+    pub fn new(i: Identifier, args: Vec<Identifier>, returns: Option<Vec<Identifier>>, block: Block) -> FunctionDefinition {
+        FunctionDefinition {
+            identifier: i,
+            arguments: args,
+            returns: returns,
+            block: block,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+pub struct For {
+    pub init: ForOp,
+    pub check: FunctionalExpression,
+    pub each: ForOp,
+    pub block: Block,
+}
+
+impl For {
+    pub fn new(init: ForOp, check: FunctionalExpression, each: ForOp, block: Block) -> For {
+        For {
+            init: init,
+            check: check,
+            each: each,
+            block: block,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+pub enum ForOp {
+    Block(Block),
+    FunctionalExpression(FunctionalExpression),
+}
+
+
 /*
  * Control Structures
  */
@@ -114,6 +170,52 @@ impl SubAssembly {
         }
     }
 }
+
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+pub struct Switch {
+    pub expression: FunctionalExpression,
+    pub cases: Vec<Case>,
+    pub default: Option<DefaultCase>,
+}
+
+impl Switch {
+    pub fn new(e: FunctionalExpression, cs: Vec<Case>, d: Option<DefaultCase>) -> Switch {
+        Switch {
+            expression: e,
+            cases: cs,
+            default: d
+        }
+    }
+}
+
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+pub struct Case {
+    pub expression: Expression,
+    pub block: Block,
+}
+
+impl Case {
+    pub fn new(e: Expression, b: Block) -> Case {
+        Case {
+            expression: e,
+            block: b,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+pub struct DefaultCase {
+    pub block: Block,
+}
+
+impl DefaultCase {
+    pub fn new(b: Block) -> DefaultCase {
+        DefaultCase {
+            block: b,
+        }
+    }
+}
+
 
 
 /*

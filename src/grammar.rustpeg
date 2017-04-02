@@ -1,22 +1,25 @@
 use super::ast::{HexNumber, DecNumber, HexLiteral, StringLiteral, LinkerSymbol,
                  Identifier, LabelDefinition, Assignment, Item,
                  FunctionalExpression, LocalDefinition, FunctionalAssignment,
-                 Block, SubAssembly};
+                 Block, SubAssembly, Switch, Case, DefaultCase,
+                 FunctionDefinition, For, ForOp, Expression};
 
 pub block -> Block
-  = __ "{" items:(item*) { Block::new(items) }
+  = __ "{" items:(item*) __ "}" { Block::new(items) }
 
 pub item -> Item
-  = "break" { Item::Break() }
-  / "continue" { Item::Continue() }
-  / "errorLabel" { Item::ErrorLabel() }
-  / "bytecodeSize" { Item::BytecodeSize() }
-  / "dataSize" "(" i:identifier ")" { Item::DataSize(i) }
+  = __ "break" { Item::Break() }
+  / __ "continue" { Item::Continue() }
+  / __ "errorLabel" { Item::ErrorLabel() }
+  / __ "bytecodeSize" { Item::BytecodeSize() }
+  / __ "dataSize" __ "(" i:identifier __ ")" { Item::DataSize(i) }
   / x:hex_literal { Item::HexLiteral(x) }
   / d:local_definition { Item::LocalDefinition(d) }
   / s:sub { Item::SubAssembly(s) }
-
+  / s:switch { Item::Switch(s) }
+  / f:for_stmt { Item::For(f) }
   / b:block { Item::Block(b) }
+  / d:function_definition { Item::FunctionDefinition(d) }
   / a:functional_assignment { Item::FunctionalAssignment(a) }
   / e:functional_expression { Item::FunctionalExpression(e) }
   / l:linker_symbol { Item::LinkerSymbol(l) }
@@ -27,10 +30,16 @@ pub item -> Item
   / n:dec_number { Item::DecNumber(n) }
 
 pub functional_expression -> FunctionalExpression
-  = __ i:identifier "(" items:item_list ")" { FunctionalExpression::new(i, items) }
+  = __ i:identifier __ "(" items:item_list __ ")" { FunctionalExpression::new(i, items) }
+
+expression -> Expression
+  = e:functional_expression { Expression::FunctionalExpression(e) }
+  / x:hex_number { Expression::HexNumber(x) }
+  / n:dec_number { Expression::DecNumber(n) }
+  / s:string { Expression::StringLiteral(s) }
 
 pub local_definition -> LocalDefinition
-  = __ "let" is:identifier_or_list __ ":=" e:functional_expression {
+  = __ "let" is:identifier_or_list __ ":=" e:expression {
       LocalDefinition::new(is, e)
     }
 
@@ -42,6 +51,30 @@ pub functional_assignment -> FunctionalAssignment
 pub sub -> SubAssembly
   = __ "assembly" i:identifier b:block { SubAssembly::new(i, b) }
 
+pub switch -> Switch
+  = __ "switch" e:functional_expression cs:(case*) d:(default?) { Switch::new(e, cs, d) }
+
+pub case -> Case
+  = __ "case" e:expression __ ":" b:block { Case::new(e, b) }
+
+pub default -> DefaultCase
+  = __ "default" __ ":" b:block { DefaultCase::new(b) }
+
+pub function_definition -> FunctionDefinition
+  = __ "function" i:identifier __ "(" args:identifier_list_or_empty __ ")"
+      __ "->" __ "(" returns:identifier_list __ ")" block:block
+    { FunctionDefinition::new(i, args, Some(returns), block) }
+  / __ "function" i:identifier __ "(" args:identifier_list_or_empty __ ")" block:block
+    { FunctionDefinition::new(i, args, None, block) }
+
+for_stmt -> For
+  = __ "for" init:for_op check:functional_expression each:for_op block:block {
+      For::new(init, check, each, block)
+    }
+
+for_op -> ForOp
+  = b:block { ForOp::Block(b) }
+  / e:functional_expression { ForOp::FunctionalExpression(e) }
 
 item_list -> Vec<Item>
   = __ first:item rest:(item_list_clause*) {
@@ -56,8 +89,8 @@ item_list_clause -> Item
 
 
 pub identifier_or_list -> Vec<Identifier>
-  = __ i:identifier { vec![i] }
-  / __ "(" is:identifier_list ")" { is }
+  = i:identifier { vec![i] }
+  / __ "(" is:identifier_list __ ")" { is }
 
 pub identifier_list -> Vec<Identifier>
   = __ i:identifier is:(identifier_list_clause*) {
@@ -66,14 +99,23 @@ pub identifier_list -> Vec<Identifier>
       identifiers
   }
 
+pub identifier_list_or_empty -> Vec<Identifier>
+  = opt:(identifier_list?)  {
+      match opt {
+        Some(identifiers) => identifiers,
+        None => vec![],
+      }
+    }
+
+
 identifier_list_clause -> Identifier
   = __ "," i:identifier { i }
 
 pub assignment -> Assignment
-  = "=:" i:identifier  { Assignment::new(i) }
+  = __ "=:" i:identifier  { Assignment::new(i) }
 
 pub label_definition -> LabelDefinition
-  = __ i:identifier ':' { LabelDefinition::new(i) }
+  = i:identifier ':' { LabelDefinition::new(i) }
 
 pub identifier -> Identifier
   = __ name:$([a-zA-Z_$] [a-zA-Z_0-9]*) { Identifier::new(name) }
@@ -85,8 +127,8 @@ pub hex_literal -> HexLiteral
   = __ "hex" b:bytestr { HexLiteral::new(b.as_str()) }
 
 bytestr -> String
-  = "\"" b:bytes "\"" { b }
-  / "\'" b:bytes "\'" { b }
+  = __ "\"" b:bytes "\"" { b }
+  / __ "\'" b:bytes "\'" { b }
 bytes -> String
   = b:$(([0-9A-Fa-f]{2})*) { b.to_string() }
 
@@ -100,7 +142,7 @@ pub dec_number -> DecNumber
   = __ uint:$([0-9]+) { DecNumber::new(uint) }
 
 doubleQuotedString -> String
-  = '"' s:doubleQuotedCharacter* '"' { s.into_iter().collect() }
+  = __ '"' s:doubleQuotedCharacter* '"' { s.into_iter().collect() }
 
 doubleQuotedCharacter -> char
   = simpleDoubleQuotedCharacter

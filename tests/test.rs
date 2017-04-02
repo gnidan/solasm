@@ -5,7 +5,6 @@ use solasm::grammar::*;
 use solasm::ast::Item;
 use bigint::U256;
 
-
 #[test]
 fn it_works() {
     let _ = env_logger::init();
@@ -52,4 +51,41 @@ fn it_parses_items() {
                Item::Identifier(identifier("foo").unwrap()));
     assert_eq!(item("break").unwrap(), Item::Break());
 
+}
+
+#[test]
+fn it_parses_block() {
+    let _ = env_logger::init();
+    let assembly = r#"{
+  mstore(0x40, 0x60) // store the "free memory pointer"
+  // function dispatcher
+  switch div(calldataload(0), exp(2, 226))
+  case 0xb3de648b: {
+    let (r) := f(calldataload(4))
+    let ret := $allocate(0x20)
+    mstore(ret, r)
+    return(ret, 0x20)
+  }
+  default: { jump(invalidJumpLabel) }
+  // memory allocator
+  function $allocate(size) -> (pos) {
+    pos := mload(0x40)
+    mstore(0x40, add(pos, size))
+  }
+  // the contract function
+  function f(x) -> (y) {
+    let y := 1
+    for { let i := 0 } lt(i, x) { i := add(i, 1) } {
+      y := mul(2, y)
+    }
+  }
+}"#;
+
+    println!("assembly: {}", assembly);
+
+    let result = block(assembly);
+
+    println!("{:?}", result.unwrap());
+
+    assert_eq!(1, 0);
 }
