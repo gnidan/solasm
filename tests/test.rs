@@ -12,6 +12,10 @@ fn it_works() {
                vec![255, 17, 255, 255]);
     assert_eq!(hex_literal("hex'FF11FFFF'").unwrap().bytes,
                vec![255, 17, 255, 255]);
+
+    assert_eq!(identifier("foo").unwrap().symbol, "foo".to_string());
+    assert_eq!(identifier("$foo").unwrap().symbol, "$foo".to_string());
+    assert_eq!(identifier("$foo_").unwrap().symbol, "$foo_".to_string());
 }
 
 #[test]

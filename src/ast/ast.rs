@@ -8,6 +8,36 @@ use self::bigint::{U256, Uint};
 extern crate rustc_serialize;
 use self::rustc_serialize::hex::FromHex;
 
+/*
+ * Identifiers
+ */
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+pub struct Identifier {
+    pub symbol: String,
+}
+
+impl Identifier {
+    pub fn new(s: &str) -> Identifier {
+        Identifier { symbol: s.to_string() }
+    }
+}
+
+
+/*
+ * Linker Symbols
+ */
+
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+pub struct LinkerSymbol {
+    pub symbol: String,
+}
+
+impl LinkerSymbol {
+    pub fn new(s: StringLiteral) -> LinkerSymbol {
+        LinkerSymbol { symbol: s.string }
+    }
+}
+
 
 /*
  * String Literals
