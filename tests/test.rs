@@ -3,6 +3,7 @@ extern crate bigint;
 extern crate env_logger;
 use solasm::grammar::*;
 use solasm::ast::Item;
+use solasm::parse;
 use bigint::U256;
 
 #[test]
@@ -54,7 +55,7 @@ fn it_parses_items() {
 }
 
 #[test]
-fn it_parses_block() {
+fn it_parses_examples() {
     let _ = env_logger::init();
     let assembly = r#"{
       mstore(0x40, 0x60) // store the "free memory pointer"
@@ -80,10 +81,7 @@ fn it_parses_block() {
         }
       }
     }"#;
-
-
-    let result = block(assembly);
-    assert!(result.is_ok());
+    assert_parses_ok(assembly);
 
     let assembly2 = r#"{
       function power(base, exponent) -> (result) {
@@ -97,9 +95,7 @@ fn it_parses_block() {
         }
       }
     }"#;
-
-    let result2 = block(assembly2);
-    assert!(result2.is_ok());
+    assert_parses_ok(assembly2);
 
 
     let assembly3 = r#"{
@@ -115,8 +111,13 @@ fn it_parses_block() {
         mstore(0, a)
         return(0, 0x20)
     }"#;
+    assert_parses_ok(assembly3);
+}
 
-    let result3 = block(assembly3);
-
-    assert!(result3.is_ok());
+fn assert_parses_ok(assembly: &str) {
+    let result = parse(assembly);
+    match result {
+        Ok(_) => { },
+        Err(err) => { panic!("{:?}", err) },
+    }
 }
