@@ -2,6 +2,7 @@ extern crate solasm;
 extern crate bigint;
 extern crate env_logger;
 use solasm::grammar::*;
+use solasm::ast::Item;
 use bigint::U256;
 
 
@@ -43,4 +44,11 @@ fn it_ignores_comments() {
                U256::from(255));
     assert_eq!(hex_number("// hex number\n 0xFF").unwrap().uint,
                U256::from(255));
+}
+
+#[test]
+fn it_parses_items() {
+    assert_eq!(item("foo").unwrap(), Item::Identifier(identifier("foo").unwrap()));
+    assert_eq!(item("break").unwrap(), Item::Break());
+
 }

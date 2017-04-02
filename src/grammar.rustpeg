@@ -1,5 +1,29 @@
 use super::ast::{HexNumber, DecNumber, HexLiteral, StringLiteral, LinkerSymbol,
-                 Identifier, LabelDefinition, Assignment, IdentifierList};
+                 Identifier, LabelDefinition, Assignment, IdentifierList, Item};
+/*
+    Identifier |
+    Assignment |
+    LabelDefinition |
+    'break' | 'continue' |
+    'dataSize' '(' Identifier ')' |
+    LinkerSymbol |
+    'errorLabel' | 'bytecodeSize' |
+    NumberLiteral | StringLiteral | HexLiteral
+ */
+
+pub item -> Item
+  = "break" { Item::Break() }
+  / "continue" { Item::Continue() }
+  / "errorLabel" { Item::ErrorLabel() }
+  / "bytecodeSize" { Item::BytecodeSize() }
+  / "dataSize" "(" i:identifier ")" { Item::DataSize(i) }
+  / l:linker_symbol { Item::LinkerSymbol(l) }
+  / i:identifier { Item::Identifier(i) }
+  / a:assignment { Item::Assignment(a) }
+  / l:label_definition { Item::LabelDefinition(l) }
+  / x:hex_literal { Item::HexLiteral(x) }
+  / x:hex_number { Item::HexNumber(x) }
+  / n:dec_number { Item::DecNumber(n) }
 
 pub identifier_or_list -> IdentifierList
   = __ i:identifier { IdentifierList::new(i, vec![]) }

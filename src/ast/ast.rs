@@ -9,6 +9,29 @@ extern crate rustc_serialize;
 use self::rustc_serialize::hex::FromHex;
 
 /*
+ * Item
+ */
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+pub enum Item {
+    Identifier(Identifier),
+    Assignment(Assignment),
+    LabelDefinition(LabelDefinition),
+    Break(),
+    Continue(),
+    DataSize(Identifier),
+    LinkerSymbol(LinkerSymbol),
+    ErrorLabel(),
+    BytecodeSize(),
+    HexLiteral(HexLiteral),
+    StringLiteral(StringLiteral),
+    HexNumber(HexNumber),
+    DecNumber(DecNumber),
+}
+
+
+
+
+/*
  * Identifier Lists
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
