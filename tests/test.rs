@@ -26,7 +26,7 @@ fn it_works() {
     assert_eq!(assignment("=: x").unwrap().identifier.symbol,
                "x".to_string());
 
-    assert_eq!(identifier_list("x, y, z").unwrap().identifiers,
+    assert_eq!(identifier_list("x, y, z").unwrap(),
                vec![identifier("x").unwrap(), identifier("y").unwrap(), identifier("z").unwrap()]);
 
     assert_eq!(identifier_or_list("(x, y, z)").unwrap(),
@@ -48,7 +48,8 @@ fn it_ignores_comments() {
 
 #[test]
 fn it_parses_items() {
-    assert_eq!(item("foo").unwrap(), Item::Identifier(identifier("foo").unwrap()));
+    assert_eq!(item("foo").unwrap(),
+               Item::Identifier(identifier("foo").unwrap()));
     assert_eq!(item("break").unwrap(), Item::Break());
 
 }

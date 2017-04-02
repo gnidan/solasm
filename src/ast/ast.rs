@@ -29,24 +29,25 @@ pub enum Item {
 }
 
 
-
-
 /*
- * Identifier Lists
+ * Functional Expressions!
  */
-#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
-pub struct IdentifierList {
-    pub identifiers: Vec<Identifier>,
+pub struct FunctionalExpression {
+    pub identifier: Identifier,
+    pub items: Vec<Item>,
 }
 
-impl IdentifierList {
-    pub fn new(i: Identifier, is: Vec<Identifier>) -> IdentifierList {
-        let mut identifiers = vec![i];
-        identifiers.extend(is);
-
-        IdentifierList { identifiers: identifiers }
+impl FunctionalExpression {
+    pub fn new(i: Identifier, items: Vec<Item>) -> FunctionalExpression {
+        FunctionalExpression {
+            identifier: i,
+            items: items,
+        }
     }
 }
+
+
+
 
 
 /*

@@ -1,15 +1,6 @@
 use super::ast::{HexNumber, DecNumber, HexLiteral, StringLiteral, LinkerSymbol,
-                 Identifier, LabelDefinition, Assignment, IdentifierList, Item};
-/*
-    Identifier |
-    Assignment |
-    LabelDefinition |
-    'break' | 'continue' |
-    'dataSize' '(' Identifier ')' |
-    LinkerSymbol |
-    'errorLabel' | 'bytecodeSize' |
-    NumberLiteral | StringLiteral | HexLiteral
- */
+                 Identifier, LabelDefinition, Assignment, Item,
+                 FunctionalExpression};
 
 pub item -> Item
   = "break" { Item::Break() }
@@ -25,15 +16,33 @@ pub item -> Item
   / x:hex_number { Item::HexNumber(x) }
   / n:dec_number { Item::DecNumber(n) }
 
-pub identifier_or_list -> IdentifierList
-  = __ i:identifier { IdentifierList::new(i, vec![]) }
+pub functional_expression -> FunctionalExpression
+  = __ i:identifier "(" items:item_list ")" { FunctionalExpression::new(i, items) }
+
+item_list -> Vec<Item>
+  = __ first:item rest:(item_list_clause*) {
+      let mut items = vec![first];
+      items.extend(rest);
+      items
+    }
+
+item_list_clause -> Item
+  = __ "," item:item { item }
+
+
+pub identifier_or_list -> Vec<Identifier>
+  = __ i:identifier { vec![i] }
   / __ "(" is:identifier_list ")" { is }
 
-pub identifier_list -> IdentifierList
-  = __ i:identifier is:(identifier_list_clause*) { IdentifierList::new(i, is) }
+pub identifier_list -> Vec<Identifier>
+  = __ i:identifier is:(identifier_list_clause*) {
+      let mut identifiers = vec![i];
+      identifiers.extend(is);
+      identifiers
+  }
 
 identifier_list_clause -> Identifier
-  = __ "," __ i:identifier { i }
+  = __ "," i:identifier { i }
 
 pub assignment -> Assignment
   = "=:" i:identifier  { Assignment::new(i) }
