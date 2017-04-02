@@ -1,4 +1,3 @@
-use std::fmt::{Display, Formatter, Error};
 use std::str::FromStr;
 use std::vec::Vec;
 
@@ -118,7 +117,11 @@ pub struct FunctionDefinition {
 }
 
 impl FunctionDefinition {
-    pub fn new(i: Identifier, args: Vec<Identifier>, returns: Option<Vec<Identifier>>, block: Block) -> FunctionDefinition {
+    pub fn new(i: Identifier,
+               args: Vec<Identifier>,
+               returns: Option<Vec<Identifier>>,
+               block: Block)
+               -> FunctionDefinition {
         FunctionDefinition {
             identifier: i,
             arguments: args,
@@ -184,7 +187,7 @@ impl Switch {
         Switch {
             expression: e,
             cases: cs,
-            default: d
+            default: d,
         }
     }
 }
@@ -211,9 +214,7 @@ pub struct DefaultCase {
 
 impl DefaultCase {
     pub fn new(b: Block) -> DefaultCase {
-        DefaultCase {
-            block: b,
-        }
+        DefaultCase { block: b }
     }
 }
 
