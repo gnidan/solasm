@@ -23,9 +23,9 @@ pub item -> Item
   / a:functional_assignment { Item::FunctionalAssignment(a) }
   / e:functional_expression { Item::FunctionalExpression(e) }
   / l:linker_symbol { Item::LinkerSymbol(l) }
+  / l:label_definition { Item::LabelDefinition(l) }
   / i:identifier { Item::Identifier(i) }
   / a:assignment { Item::Assignment(a) }
-  / l:label_definition { Item::LabelDefinition(l) }
   / x:hex_number { Item::HexNumber(x) }
   / n:dec_number { Item::DecNumber(n) }
 
@@ -37,6 +37,7 @@ expression -> Expression
   / x:hex_number { Expression::HexNumber(x) }
   / n:dec_number { Expression::DecNumber(n) }
   / s:string { Expression::StringLiteral(s) }
+  / i:identifier { Expression::Identifier(i) }
 
 pub local_definition -> LocalDefinition
   = __ "let" is:identifier_or_list __ ":=" e:expression {
@@ -44,7 +45,7 @@ pub local_definition -> LocalDefinition
     }
 
 pub functional_assignment -> FunctionalAssignment
-  = __ is:identifier_or_list __ ":=" e:functional_expression {
+  = __ is:identifier_or_list __ ":=" e:expression {
     FunctionalAssignment::new(is, e)
   }
 
@@ -52,7 +53,7 @@ pub sub -> SubAssembly
   = __ "assembly" i:identifier b:block { SubAssembly::new(i, b) }
 
 pub switch -> Switch
-  = __ "switch" e:functional_expression cs:(case*) d:(default?) { Switch::new(e, cs, d) }
+  = __ "switch" e:expression cs:(case*) d:(default?) { Switch::new(e, cs, d) }
 
 pub case -> Case
   = __ "case" e:expression __ ":" b:block { Case::new(e, b) }
@@ -115,7 +116,7 @@ pub assignment -> Assignment
   = __ "=:" i:identifier  { Assignment::new(i) }
 
 pub label_definition -> LabelDefinition
-  = i:identifier ':' { LabelDefinition::new(i) }
+  = i:identifier __ ":" { LabelDefinition::new(i) }
 
 pub identifier -> Identifier
   = __ name:$([a-zA-Z_$] [a-zA-Z_0-9]*) { Identifier::new(name) }

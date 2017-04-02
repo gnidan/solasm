@@ -57,6 +57,7 @@ pub enum Expression {
     HexNumber(HexNumber),
     DecNumber(DecNumber),
     StringLiteral(StringLiteral),
+    Identifier(Identifier),
 }
 
 /*
@@ -95,11 +96,11 @@ impl LocalDefinition {
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct FunctionalAssignment {
     pub identifiers: Vec<Identifier>,
-    pub expression: FunctionalExpression,
+    pub expression: Expression,
 }
 
 impl FunctionalAssignment {
-    pub fn new(is: Vec<Identifier>, e: FunctionalExpression) -> FunctionalAssignment {
+    pub fn new(is: Vec<Identifier>, e: Expression) -> FunctionalAssignment {
         FunctionalAssignment {
             identifiers: is,
             expression: e,
@@ -173,13 +174,13 @@ impl SubAssembly {
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct Switch {
-    pub expression: FunctionalExpression,
+    pub expression: Expression,
     pub cases: Vec<Case>,
     pub default: Option<DefaultCase>,
 }
 
 impl Switch {
-    pub fn new(e: FunctionalExpression, cs: Vec<Case>, d: Option<DefaultCase>) -> Switch {
+    pub fn new(e: Expression, cs: Vec<Case>, d: Option<DefaultCase>) -> Switch {
         Switch {
             expression: e,
             cases: cs,

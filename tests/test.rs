@@ -57,35 +57,66 @@ fn it_parses_items() {
 fn it_parses_block() {
     let _ = env_logger::init();
     let assembly = r#"{
-  mstore(0x40, 0x60) // store the "free memory pointer"
-  // function dispatcher
-  switch div(calldataload(0), exp(2, 226))
-  case 0xb3de648b: {
-    let (r) := f(calldataload(4))
-    let ret := $allocate(0x20)
-    mstore(ret, r)
-    return(ret, 0x20)
-  }
-  default: { jump(invalidJumpLabel) }
-  // memory allocator
-  function $allocate(size) -> (pos) {
-    pos := mload(0x40)
-    mstore(0x40, add(pos, size))
-  }
-  // the contract function
-  function f(x) -> (y) {
-    let y := 1
-    for { let i := 0 } lt(i, x) { i := add(i, 1) } {
-      y := mul(2, y)
-    }
-  }
-}"#;
+      mstore(0x40, 0x60) // store the "free memory pointer"
+      // function dispatcher
+      switch div(calldataload(0), exp(2, 226))
+      case 0xb3de648b: {
+        let (r) := f(calldataload(4))
+        let ret := $allocate(0x20)
+        mstore(ret, r)
+        return(ret, 0x20)
+      }
+      default: { jump(invalidJumpLabel) }
+      // memory allocator
+      function $allocate(size) -> (pos) {
+        pos := mload(0x40)
+        mstore(0x40, add(pos, size))
+      }
+      // the contract function
+      function f(x) -> (y) {
+        y := 1
+        for { let i := 0 } lt(i, x) { i := add(i, 1) } {
+          y := mul(2, y)
+        }
+      }
+    }"#;
 
-    println!("assembly: {}", assembly);
 
     let result = block(assembly);
+    assert!(result.is_ok());
 
-    println!("{:?}", result.unwrap());
+    let assembly2 = r#"{
+      function power(base, exponent) -> (result) {
+        switch exponent
+        case 0: { result := 1 }
+        case 1: { result := base }
+        default: {
+            result := power(mul(base, base), div(exponent, 2))
+            switch mod(exponent, 2)
+                case 1: { result := mul(base, result) }
+        }
+      }
+    }"#;
 
-    assert_eq!(1, 0);
+    let result2 = block(assembly2);
+    assert!(result2.is_ok());
+
+
+    let assembly3 = r#"{
+        let n := calldataload(4)
+        let a := 1
+        let b := a
+    loop:
+        jumpi(loopend, eq(n, 0))
+        a add swap1
+        n := sub(n, 1)
+        jump(loop)
+    loopend:
+        mstore(0, a)
+        return(0, 0x20)
+    }"#;
+
+    let result3 = block(assembly3);
+
+    assert!(result3.is_ok());
 }
