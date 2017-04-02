@@ -1,6 +1,5 @@
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-    }
+pub mod grammar {
+    include!(concat!(env!("OUT_DIR"), "/grammar.rs"));
 }
+
+pub mod ast;

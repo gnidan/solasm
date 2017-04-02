@@ -2,5 +2,11 @@
 name = "solasm"
 version = "0.1.0"
 authors = ["g. nicholas d'andrea <nick@gnidan.org>"]
+build = "build.rs"
 
 [dependencies]
+rustc-serialize = "0.3"
+bigint = "1.0"
+
+[build-dependencies]
+peg = { version = "0.5" }

@@ -1,0 +1,34 @@
+use super::ast::{HexNumber, DecNumber, HexLiteral, StringLiteral};
+
+__ = (whitespace / comment)*
+
+whitespace = [ \t\n\r]
+comment = "//" (!'\n' .)*
+
+pub hex_literal -> HexLiteral
+  = __ "hex" b:bytestr { HexLiteral::new(b.as_str()) }
+
+bytestr -> String
+  = "\"" b:bytes "\"" { b }
+  / "\'" b:bytes "\'" { b }
+bytes -> String
+  = b:$(([0-9A-Fa-f]{2})*) { b.to_string() }
+
+pub string -> StringLiteral
+  = __ string:(doubleQuotedString) { StringLiteral::new(string) }
+
+pub hex_number -> HexNumber
+  = __ "0x" uint:$([0-9A-Fa-f]+) { HexNumber::new(uint) }
+
+pub dec_number -> DecNumber
+  = __ uint:$([0-9]+) { DecNumber::new(uint) }
+
+doubleQuotedString -> String
+  = '"' s:doubleQuotedCharacter* '"' { s.into_iter().collect() }
+
+doubleQuotedCharacter -> char
+  = simpleDoubleQuotedCharacter
+
+simpleDoubleQuotedCharacter -> char
+  = (!('"' / "\r" / "\n" / "\\") / "\\" .) c:$. { c.chars().next().unwrap() }
+
