@@ -1,7 +1,7 @@
 use super::ast::{HexNumber, DecNumber, HexLiteral, StringLiteral, LinkerSymbol,
                  Identifier, LabelDefinition, Assignment, Item,
                  FunctionalExpression, LocalDefinition, FunctionalAssignment,
-                 Block};
+                 Block, SubAssembly};
 
 pub block -> Block
   = __ "{" items:(item*) { Block::new(items) }
@@ -12,15 +12,17 @@ pub item -> Item
   / "errorLabel" { Item::ErrorLabel() }
   / "bytecodeSize" { Item::BytecodeSize() }
   / "dataSize" "(" i:identifier ")" { Item::DataSize(i) }
-  / b:block { Item::Block(b) }
+  / x:hex_literal { Item::HexLiteral(x) }
   / d:local_definition { Item::LocalDefinition(d) }
+  / s:sub { Item::SubAssembly(s) }
+
+  / b:block { Item::Block(b) }
   / a:functional_assignment { Item::FunctionalAssignment(a) }
   / e:functional_expression { Item::FunctionalExpression(e) }
   / l:linker_symbol { Item::LinkerSymbol(l) }
   / i:identifier { Item::Identifier(i) }
   / a:assignment { Item::Assignment(a) }
   / l:label_definition { Item::LabelDefinition(l) }
-  / x:hex_literal { Item::HexLiteral(x) }
   / x:hex_number { Item::HexNumber(x) }
   / n:dec_number { Item::DecNumber(n) }
 
@@ -36,6 +38,9 @@ pub functional_assignment -> FunctionalAssignment
   = __ is:identifier_or_list __ ":=" e:functional_expression {
     FunctionalAssignment::new(is, e)
   }
+
+pub sub -> SubAssembly
+  = __ "assembly" i:identifier b:block { SubAssembly::new(i, b) }
 
 
 item_list -> Vec<Item>

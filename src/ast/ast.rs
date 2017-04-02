@@ -45,6 +45,7 @@ pub enum Item {
     FunctionalExpression(FunctionalExpression),
     LocalDefinition(LocalDefinition),
     FunctionalAssignment(FunctionalAssignment),
+    SubAssembly(SubAssembly),
 }
 
 
@@ -92,6 +93,24 @@ impl FunctionalAssignment {
         FunctionalAssignment {
             identifiers: is,
             expression: e,
+        }
+    }
+}
+
+/*
+ * Control Structures
+ */
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+pub struct SubAssembly {
+    pub identifier: Identifier,
+    pub block: Block,
+}
+
+impl SubAssembly {
+    pub fn new(i: Identifier, b: Block) -> SubAssembly {
+        SubAssembly {
+            identifier: i,
+            block: b,
         }
     }
 }
