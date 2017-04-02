@@ -32,6 +32,7 @@ pub enum Item {
 /*
  * Functional Expressions!
  */
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct FunctionalExpression {
     pub identifier: Identifier,
     pub items: Vec<Item>,
@@ -46,8 +47,35 @@ impl FunctionalExpression {
     }
 }
 
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+pub struct LocalDefinition {
+    pub identifiers: Vec<Identifier>,
+    pub expression: FunctionalExpression,
+}
 
+impl LocalDefinition {
+    pub fn new(is: Vec<Identifier>, e: FunctionalExpression) -> LocalDefinition {
+        LocalDefinition {
+            identifiers: is,
+            expression: e,
+        }
+    }
+}
 
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+pub struct FunctionalAssignment {
+    pub identifiers: Vec<Identifier>,
+    pub expression: FunctionalExpression,
+}
+
+impl FunctionalAssignment {
+    pub fn new(is: Vec<Identifier>, e: FunctionalExpression) -> FunctionalAssignment {
+        FunctionalAssignment {
+            identifiers: is,
+            expression: e,
+        }
+    }
+}
 
 
 /*

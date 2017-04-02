@@ -1,6 +1,6 @@
 use super::ast::{HexNumber, DecNumber, HexLiteral, StringLiteral, LinkerSymbol,
                  Identifier, LabelDefinition, Assignment, Item,
-                 FunctionalExpression};
+                 FunctionalExpression, LocalDefinition, FunctionalAssignment};
 
 pub item -> Item
   = "break" { Item::Break() }
@@ -19,12 +19,24 @@ pub item -> Item
 pub functional_expression -> FunctionalExpression
   = __ i:identifier "(" items:item_list ")" { FunctionalExpression::new(i, items) }
 
+pub local_definition -> LocalDefinition
+  = __ "let" is:identifier_or_list __ ":=" e:functional_expression {
+      LocalDefinition::new(is, e)
+    }
+
+pub functional_assignment -> FunctionalAssignment
+  = __ is:identifier_or_list __ ":=" e:functional_expression {
+    FunctionalAssignment::new(is, e)
+  }
+
+
 item_list -> Vec<Item>
   = __ first:item rest:(item_list_clause*) {
       let mut items = vec![first];
       items.extend(rest);
       items
     }
+  / __ { vec![] }
 
 item_list_clause -> Item
   = __ "," item:item { item }
