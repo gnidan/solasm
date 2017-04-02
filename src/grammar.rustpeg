@@ -8,6 +8,9 @@ pub item -> Item
   / "errorLabel" { Item::ErrorLabel() }
   / "bytecodeSize" { Item::BytecodeSize() }
   / "dataSize" "(" i:identifier ")" { Item::DataSize(i) }
+  / d:local_definition { Item::LocalDefinition(d) }
+  / a:functional_assignment { Item::FunctionalAssignment(a) }
+  / e:functional_expression { Item::FunctionalExpression(e) }
   / l:linker_symbol { Item::LinkerSymbol(l) }
   / i:identifier { Item::Identifier(i) }
   / a:assignment { Item::Assignment(a) }

@@ -26,6 +26,9 @@ pub enum Item {
     StringLiteral(StringLiteral),
     HexNumber(HexNumber),
     DecNumber(DecNumber),
+    FunctionalExpression(FunctionalExpression),
+    LocalDefinition(LocalDefinition),
+    FunctionalAssignment(FunctionalAssignment),
 }
 
 
