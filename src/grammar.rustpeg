@@ -1,10 +1,5 @@
 use super::ast::{HexNumber, DecNumber, HexLiteral, StringLiteral};
 
-__ = (whitespace / comment)*
-
-whitespace = [ \t\n\r]
-comment = "//" (!'\n' .)*
-
 pub hex_literal -> HexLiteral
   = __ "hex" b:bytestr { HexLiteral::new(b.as_str()) }
 
@@ -31,4 +26,11 @@ doubleQuotedCharacter -> char
 
 simpleDoubleQuotedCharacter -> char
   = (!('"' / "\r" / "\n" / "\\") / "\\" .) c:$. { c.chars().next().unwrap() }
+
+__ = (whitespace / comment)*
+
+whitespace = [ \t\n\r]
+comment
+  = "//" (!'\n' .)*
+  / "/*" (!"*/" .)* "*/"
 
