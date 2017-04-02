@@ -9,6 +9,34 @@ extern crate rustc_serialize;
 use self::rustc_serialize::hex::FromHex;
 
 /*
+ * Assignments/Labels
+ */
+
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+pub struct Assignment {
+    pub identifier: Identifier,
+}
+
+impl Assignment {
+    pub fn new(i: Identifier) -> Assignment {
+        Assignment { identifier: i }
+    }
+}
+
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+pub struct LabelDefinition {
+    pub identifier: Identifier,
+}
+
+impl LabelDefinition {
+    pub fn new(i: Identifier) -> LabelDefinition {
+        LabelDefinition { identifier: i }
+    }
+}
+
+
+
+/*
  * Identifiers
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]

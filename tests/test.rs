@@ -16,6 +16,11 @@ fn it_works() {
     assert_eq!(identifier("foo").unwrap().symbol, "foo".to_string());
     assert_eq!(identifier("$foo").unwrap().symbol, "$foo".to_string());
     assert_eq!(identifier("$foo_").unwrap().symbol, "$foo_".to_string());
+
+    assert_eq!(label_definition("x:").unwrap().identifier.symbol,
+               "x".to_string());
+    assert_eq!(assignment("=: x").unwrap().identifier.symbol,
+               "x".to_string());
 }
 
 #[test]
