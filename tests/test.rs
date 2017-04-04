@@ -70,10 +70,6 @@ fn it_parses_switches_and_functions() {
         }
       }
     }"#;
-    // let assembly = r#"
-    // {
-    //     let (r) := f(calldataload(4))
-    // }"#;
     assert_parses_ok(assembly);
 
     let assembly2 = r#"{

@@ -57,13 +57,13 @@ pub enum Expression {
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct LabelDefinition {
-    pub identifier: Identifier,
+  pub identifier: Identifier,
 }
 
 impl LabelDefinition {
-    pub fn new(i: Identifier) -> LabelDefinition {
-        LabelDefinition { identifier: i }
-    }
+  pub fn new(i: Identifier) -> LabelDefinition {
+    LabelDefinition { identifier: i }
+  }
 }
 
 /*
@@ -97,17 +97,17 @@ impl FunctionDefinition {
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct VariableDeclaration {
-    pub identifiers: Vec<Identifier>,
-    pub expression: Expression,
+  pub identifiers: Vec<Identifier>,
+  pub expression: Expression,
 }
 
 impl VariableDeclaration {
-    pub fn new(is: Vec<Identifier>, e: Expression) -> VariableDeclaration {
-        VariableDeclaration {
-            identifiers: is,
-            expression: e,
-        }
+  pub fn new(is: Vec<Identifier>, e: Expression) -> VariableDeclaration {
+    VariableDeclaration {
+      identifiers: is,
+      expression: e,
     }
+  }
 }
 
 /*
@@ -115,17 +115,17 @@ impl VariableDeclaration {
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct Assignment {
-    pub identifiers: Vec<Identifier>,
-    pub expression: Expression,
+  pub identifiers: Vec<Identifier>,
+  pub expression: Expression,
 }
 
 impl Assignment {
-    pub fn new(is: Vec<Identifier>, e: Expression) -> Assignment {
-        Assignment {
-            identifiers: is,
-            expression: e,
-        }
+  pub fn new(is: Vec<Identifier>, e: Expression) -> Assignment {
+    Assignment {
+      identifiers: is,
+      expression: e,
     }
+  }
 }
 
 /*
@@ -133,19 +133,19 @@ impl Assignment {
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct Switch {
-    pub expression: Expression,
-    pub cases: Vec<Case>,
-    pub default: Option<Block>,
+  pub expression: Expression,
+  pub cases: Vec<Case>,
+  pub default: Option<Block>,
 }
 
 impl Switch {
-    pub fn new(e: Expression, cs: Vec<Case>, d: Option<Block>) -> Switch {
-        Switch {
-            expression: e,
-            cases: cs,
-            default: d,
-        }
+  pub fn new(e: Expression, cs: Vec<Case>, d: Option<Block>) -> Switch {
+    Switch {
+      expression: e,
+      cases: cs,
+      default: d,
     }
+  }
 }
 
 /*
@@ -153,17 +153,17 @@ impl Switch {
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct Case {
-    pub expression: Expression,
-    pub block: Block,
+  pub expression: Expression,
+  pub block: Block,
 }
 
 impl Case {
-    pub fn new(e: Expression, b: Block) -> Case {
-        Case {
-            expression: e,
-            block: b,
-        }
+  pub fn new(e: Expression, b: Block) -> Case {
+    Case {
+      expression: e,
+      block: b,
     }
+  }
 }
 
 /*
@@ -171,21 +171,21 @@ impl Case {
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct ForLoop {
-    pub init: Block,
-    pub condition: Expression,
-    pub post: Block,
-    pub body: Block,
+  pub init: Block,
+  pub condition: Expression,
+  pub post: Block,
+  pub body: Block,
 }
 
 impl ForLoop {
-    pub fn new(i: Block, c: Expression, p: Block, b: Block) -> ForLoop {
-        ForLoop {
-            init: i,
-            condition: c,
-            post: p,
-            body: b,
-        }
+  pub fn new(i: Block, c: Expression, p: Block, b: Block) -> ForLoop {
+    ForLoop {
+      init: i,
+      condition: c,
+      post: p,
+      body: b,
     }
+  }
 }
 
 /*
@@ -203,13 +203,13 @@ pub enum ControlOp {
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct DataSize {
-    pub identifier: Identifier,
+  pub identifier: Identifier,
 }
 
 impl DataSize {
-    pub fn new(i: Identifier) -> DataSize {
-        DataSize { identifier: i }
-    }
+  pub fn new(i: Identifier) -> DataSize {
+    DataSize { identifier: i }
+  }
 }
 
 /*
@@ -217,17 +217,17 @@ impl DataSize {
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct SubAssembly {
-    pub identifier: Identifier,
-    pub block: Block,
+  pub identifier: Identifier,
+  pub block: Block,
 }
 
 impl SubAssembly {
-    pub fn new(i: Identifier, b: Block) -> SubAssembly {
-        SubAssembly {
-            identifier: i,
-            block: b,
-        }
+  pub fn new(i: Identifier, b: Block) -> SubAssembly {
+    SubAssembly {
+      identifier: i,
+      block: b,
     }
+  }
 }
 
 /*
@@ -235,17 +235,17 @@ impl SubAssembly {
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct FunctionCall {
-    pub identifier: Identifier,
-    pub args: Vec<Statement>,
+  pub identifier: Identifier,
+  pub args: Vec<Statement>,
 }
 
 impl FunctionCall {
-    pub fn new(i: Identifier, args: Vec<Statement>) -> FunctionCall {
-        FunctionCall {
-            identifier: i,
-            args: args,
-        }
+  pub fn new(i: Identifier, args: Vec<Statement>) -> FunctionCall {
+    FunctionCall {
+      identifier: i,
+      args: args,
     }
+  }
 }
 
 /*
@@ -253,13 +253,13 @@ impl FunctionCall {
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct LinkerSymbol {
-    pub symbol: StringLiteral,
+  pub symbol: StringLiteral,
 }
 
 impl LinkerSymbol {
-    pub fn new(s: StringLiteral) -> LinkerSymbol {
-        LinkerSymbol { symbol: s }
-    }
+  pub fn new(s: StringLiteral) -> LinkerSymbol {
+    LinkerSymbol { symbol: s }
+  }
 }
 
 /*
@@ -294,13 +294,13 @@ pub enum Literal {
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct StringLiteral {
-    pub string: String,
+  pub string: String,
 }
 
 impl StringLiteral {
-    pub fn new(s: String) -> StringLiteral {
-        StringLiteral { string: s }
-    }
+  pub fn new(s: String) -> StringLiteral {
+    StringLiteral { string: s }
+  }
 }
 
 
@@ -309,13 +309,13 @@ impl StringLiteral {
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct HexLiteral {
-    pub bytes: Vec<u8>,
+  pub bytes: Vec<u8>,
 }
 
 impl HexLiteral {
-    pub fn new(bytes: &str) -> HexLiteral {
-        HexLiteral { bytes: bytes.from_hex().unwrap() }
-    }
+  pub fn new(bytes: &str) -> HexLiteral {
+    HexLiteral { bytes: bytes.from_hex().unwrap() }
+  }
 }
 
 
@@ -324,22 +324,22 @@ impl HexLiteral {
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct HexNumber {
-    pub uint: U256,
+  pub uint: U256,
 }
 
 impl HexNumber {
-    pub fn new(uint: &str) -> HexNumber {
-        HexNumber { uint: U256::from_str(uint).unwrap() }
-    }
+  pub fn new(uint: &str) -> HexNumber {
+    HexNumber { uint: U256::from_str(uint).unwrap() }
+  }
 }
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct DecNumber {
-    pub uint: U256,
+  pub uint: U256,
 }
 
 impl DecNumber {
-    pub fn new(uint: &str) -> DecNumber {
-        DecNumber { uint: U256::from_dec_str(uint).unwrap() }
-    }
+  pub fn new(uint: &str) -> DecNumber {
+    DecNumber { uint: U256::from_dec_str(uint).unwrap() }
+  }
 }
