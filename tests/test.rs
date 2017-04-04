@@ -92,6 +92,21 @@ fn it_parses_switches_and_functions() {
 }
 
 #[test]
+fn it_parses_for_loops() {
+    let assembly = r#"{
+        function power(base, exponent) -> (result)
+        {
+            result := 1
+            for { let i := 0 } lt(i, exponent) { i := add(i, 1) }
+            {
+                result := mul(result, base)
+            }
+        }
+    }"#;
+    assert_parses_ok(assembly);
+}
+
+#[test]
 fn it_parses_labels_and_declaration() {
     let assembly = r#"{
         let n := calldataload(4)
@@ -108,6 +123,7 @@ fn it_parses_labels_and_declaration() {
     }"#;
     assert_parses_ok(assembly);
 }
+
 
 fn assert_parses_ok(assembly: &str) {
     let result = parse(assembly);
