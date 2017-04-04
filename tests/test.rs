@@ -2,16 +2,23 @@ extern crate solasm;
 extern crate bigint;
 extern crate env_logger;
 use solasm::grammar::*;
-use solasm::ast::Item;
+use solasm::ast::{Statement, Expression, ControlOp};
 use solasm::parse;
 use bigint::U256;
 
 #[test]
-fn it_works() {
-    let _ = env_logger::init();
+fn it_ignores_comments() {
+    assert_eq!(hex_number("/* hex number */ 0xFF").unwrap().uint,
+               U256::from(255));
+    assert_eq!(hex_number("// hex number\n 0xFF").unwrap().uint,
+               U256::from(255));
+}
+
+#[test]
+fn it_parses_building_blocks() {
     assert_eq!(hex_number("0xFF").unwrap().uint, U256::from(255));
     assert_eq!(dec_number("10").unwrap().uint, U256::from(10));
-    assert_eq!(string("\"10\"").unwrap().string, "10".to_string());
+    assert_eq!(string_literal("\"10\"").unwrap().string, "10".to_string());
     assert_eq!(hex_literal("hex\"FF11FFFF\"").unwrap().bytes,
                vec![255, 17, 255, 255]);
     assert_eq!(hex_literal("hex'FF11FFFF'").unwrap().bytes,
@@ -23,41 +30,23 @@ fn it_works() {
 
     assert_eq!(label_definition("x:").unwrap().identifier.symbol,
                "x".to_string());
-    assert_eq!(assignment("=: x").unwrap().identifier.symbol,
-               "x".to_string());
-
-    assert_eq!(identifier_list("x, y, z").unwrap(),
-               vec![identifier("x").unwrap(), identifier("y").unwrap(), identifier("z").unwrap()]);
-
-    assert_eq!(identifier_or_list("(x, y, z)").unwrap(),
-               identifier_list("x, y, z").unwrap());
-    assert_eq!(identifier_or_list("x").unwrap(),
-               identifier_list("x").unwrap());
-
-
-
 }
 
 #[test]
-fn it_ignores_comments() {
-    assert_eq!(hex_number("/* hex number */ 0xFF").unwrap().uint,
-               U256::from(255));
-    assert_eq!(hex_number("// hex number\n 0xFF").unwrap().uint,
-               U256::from(255));
+fn it_parses_statements() {
+    assert_eq!(statement("foo").unwrap(),
+               Statement::Expression(
+                   Expression::Identifier(identifier("foo").unwrap())
+               ));
+    assert_eq!(statement("break").unwrap(),
+                Statement::ControlOp(ControlOp::Break()));
 }
 
 #[test]
-fn it_parses_items() {
-    assert_eq!(item("foo").unwrap(),
-               Item::Identifier(identifier("foo").unwrap()));
-    assert_eq!(item("break").unwrap(), Item::Break());
-
-}
-
-#[test]
-fn it_parses_examples() {
+fn it_parses_switches_and_functions() {
     let _ = env_logger::init();
-    let assembly = r#"{
+    let assembly = r#"
+    {
       mstore(0x40, 0x60) // store the "free memory pointer"
       // function dispatcher
       switch div(calldataload(0), exp(2, 226))
@@ -81,6 +70,10 @@ fn it_parses_examples() {
         }
       }
     }"#;
+    // let assembly = r#"
+    // {
+    //     let (r) := f(calldataload(4))
+    // }"#;
     assert_parses_ok(assembly);
 
     let assembly2 = r#"{
@@ -96,9 +89,11 @@ fn it_parses_examples() {
       }
     }"#;
     assert_parses_ok(assembly2);
+}
 
-
-    let assembly3 = r#"{
+#[test]
+fn it_parses_labels_and_declaration() {
+    let assembly = r#"{
         let n := calldataload(4)
         let a := 1
         let b := a
@@ -111,13 +106,13 @@ fn it_parses_examples() {
         mstore(0, a)
         return(0, 0x20)
     }"#;
-    assert_parses_ok(assembly3);
+    assert_parses_ok(assembly);
 }
 
 fn assert_parses_ok(assembly: &str) {
     let result = parse(assembly);
     match result {
-        Ok(_) => { },
+        Ok(tree) => { println!("{:?}", tree) },
         Err(err) => { panic!("{:?}", err) },
     }
 }

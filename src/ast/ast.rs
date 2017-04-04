@@ -11,154 +11,209 @@ use self::rustc_serialize::hex::FromHex;
 /*
  * Block
  */
+
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct Block {
-    pub items: Vec<Item>,
+  pub statements: Vec<Statement>,
 }
 
 impl Block {
-    pub fn new(items: Vec<Item>) -> Block {
-        Block { items: items }
-    }
+  pub fn new(statements: Vec<Statement>) -> Block {
+    Block { statements: statements }
+  }
 }
 
 /*
- * Item
+ * Statement
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
-pub enum Item {
-    Identifier(Identifier),
-    Block(Block),
-    FunctionalExpression(FunctionalExpression),
-    LocalDefinition(LocalDefinition),
-    FunctionalAssignment(FunctionalAssignment),
-    Assignment(Assignment),
-    LabelDefinition(LabelDefinition),
-    Switch(Switch),
-    FunctionDefinition(FunctionDefinition),
-    For(For),
-    Break(),
-    Continue(),
-    SubAssembly(SubAssembly),
-    DataSize(Identifier),
-    LinkerSymbol(LinkerSymbol),
-    ErrorLabel(),
-    BytecodeSize(),
-    HexLiteral(HexLiteral),
-    StringLiteral(StringLiteral),
-    HexNumber(HexNumber),
-    DecNumber(DecNumber),
+pub enum Statement {
+  Block(Block),
+  FunctionDefinition(FunctionDefinition),
+  VariableDeclaration(VariableDeclaration),
+  Assignment(Assignment),
+  Expression(Expression),
+  LabelDefinition(LabelDefinition),
+  Switch(Switch),
+  ForLoop(ForLoop),
+  ControlOp(ControlOp),
+  SubAssembly(SubAssembly),
+  DataSize(DataSize),
+  LinkerSymbol(LinkerSymbol),
 }
 
+/*
+ * Expression
+ */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub enum Expression {
-    FunctionalExpression(FunctionalExpression),
-    HexNumber(HexNumber),
-    DecNumber(DecNumber),
-    StringLiteral(StringLiteral),
-    Identifier(Identifier),
+  Identifier(Identifier),
+  Literal(Literal),
+  FunctionCall(FunctionCall),
 }
 
 /*
- * Functional Expressions!
+ * Label Definition
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
-pub struct FunctionalExpression {
+pub struct LabelDefinition {
     pub identifier: Identifier,
-    pub items: Vec<Item>,
 }
 
-impl FunctionalExpression {
-    pub fn new(i: Identifier, items: Vec<Item>) -> FunctionalExpression {
-        FunctionalExpression {
-            identifier: i,
-            items: items,
-        }
+impl LabelDefinition {
+    pub fn new(i: Identifier) -> LabelDefinition {
+        LabelDefinition { identifier: i }
     }
 }
 
-#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
-pub struct LocalDefinition {
-    pub identifiers: Vec<Identifier>,
-    pub expression: Expression,
-}
-
-impl LocalDefinition {
-    pub fn new(is: Vec<Identifier>, e: Expression) -> LocalDefinition {
-        LocalDefinition {
-            identifiers: is,
-            expression: e,
-        }
-    }
-}
-
-#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
-pub struct FunctionalAssignment {
-    pub identifiers: Vec<Identifier>,
-    pub expression: Expression,
-}
-
-impl FunctionalAssignment {
-    pub fn new(is: Vec<Identifier>, e: Expression) -> FunctionalAssignment {
-        FunctionalAssignment {
-            identifiers: is,
-            expression: e,
-        }
-    }
-}
-
-
+/*
+ * Function Definition
+ */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct FunctionDefinition {
-    pub identifier: Identifier,
-    pub arguments: Vec<Identifier>,
-    pub returns: Option<Vec<Identifier>>,
-    pub block: Block,
+  pub identifier: Identifier,
+  pub arguments: Vec<Identifier>,
+  pub returns: Option<Vec<Identifier>>,
+  pub block: Block,
 }
 
 impl FunctionDefinition {
-    pub fn new(i: Identifier,
-               args: Vec<Identifier>,
-               returns: Option<Vec<Identifier>>,
-               block: Block)
-               -> FunctionDefinition {
-        FunctionDefinition {
-            identifier: i,
-            arguments: args,
-            returns: returns,
-            block: block,
+  pub fn new(i: Identifier,
+             args: Vec<Identifier>,
+             returns: Option<Vec<Identifier>>,
+             block: Block,
+             ) -> FunctionDefinition {
+    FunctionDefinition {
+      identifier: i,
+      arguments: args,
+      returns: returns,
+      block: block,
+    }
+  }
+}
+
+/*
+ * Variable Declaration
+ */
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+pub struct VariableDeclaration {
+    pub identifiers: Vec<Identifier>,
+    pub expression: Expression,
+}
+
+impl VariableDeclaration {
+    pub fn new(is: Vec<Identifier>, e: Expression) -> VariableDeclaration {
+        VariableDeclaration {
+            identifiers: is,
+            expression: e,
         }
     }
 }
 
+/*
+ * Assignment
+ */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
-pub struct For {
-    pub init: ForOp,
-    pub check: FunctionalExpression,
-    pub each: ForOp,
+pub struct Assignment {
+    pub identifiers: Vec<Identifier>,
+    pub expression: Expression,
+}
+
+impl Assignment {
+    pub fn new(is: Vec<Identifier>, e: Expression) -> Assignment {
+        Assignment {
+            identifiers: is,
+            expression: e,
+        }
+    }
+}
+
+/*
+ * Switch
+ */
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+pub struct Switch {
+    pub expression: Expression,
+    pub cases: Vec<Case>,
+    pub default: Option<Block>,
+}
+
+impl Switch {
+    pub fn new(e: Expression, cs: Vec<Case>, d: Option<Block>) -> Switch {
+        Switch {
+            expression: e,
+            cases: cs,
+            default: d,
+        }
+    }
+}
+
+/*
+ * Case
+ */
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+pub struct Case {
+    pub expression: Expression,
     pub block: Block,
 }
 
-impl For {
-    pub fn new(init: ForOp, check: FunctionalExpression, each: ForOp, block: Block) -> For {
-        For {
-            init: init,
-            check: check,
-            each: each,
-            block: block,
+impl Case {
+    pub fn new(e: Expression, b: Block) -> Case {
+        Case {
+            expression: e,
+            block: b,
         }
     }
 }
 
+/*
+ * For Loop
+ */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
-pub enum ForOp {
-    Block(Block),
-    FunctionalExpression(FunctionalExpression),
+pub struct ForLoop {
+    pub init: Block,
+    pub condition: Expression,
+    pub post: Block,
+    pub body: Block,
 }
 
+impl ForLoop {
+    pub fn new(i: Block, c: Expression, p: Block, b: Block) -> ForLoop {
+        ForLoop {
+            init: i,
+            condition: c,
+            post: p,
+            body: b,
+        }
+    }
+}
 
 /*
- * Control Structures
+ * Control Operation
+ */
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+pub enum ControlOp {
+  Break(),
+  Continue(),
+  BytecodeSize(),
+}
+
+/*
+ * Data
+ */
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+pub struct DataSize {
+    pub identifier: Identifier,
+}
+
+impl DataSize {
+    pub fn new(i: Identifier) -> DataSize {
+        DataSize { identifier: i }
+    }
+}
+
+/*
+ * Sub-Assembly
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct SubAssembly {
@@ -175,114 +230,68 @@ impl SubAssembly {
     }
 }
 
+/*
+ * Function Call
+ */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
-pub struct Switch {
-    pub expression: Expression,
-    pub cases: Vec<Case>,
-    pub default: Option<DefaultCase>,
+pub struct FunctionCall {
+    pub identifier: Identifier,
+    pub args: Vec<Statement>,
 }
 
-impl Switch {
-    pub fn new(e: Expression, cs: Vec<Case>, d: Option<DefaultCase>) -> Switch {
-        Switch {
-            expression: e,
-            cases: cs,
-            default: d,
+impl FunctionCall {
+    pub fn new(i: Identifier, args: Vec<Statement>) -> FunctionCall {
+        FunctionCall {
+            identifier: i,
+            args: args,
         }
     }
 }
 
-#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
-pub struct Case {
-    pub expression: Expression,
-    pub block: Block,
-}
-
-impl Case {
-    pub fn new(e: Expression, b: Block) -> Case {
-        Case {
-            expression: e,
-            block: b,
-        }
-    }
-}
-
-#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
-pub struct DefaultCase {
-    pub block: Block,
-}
-
-impl DefaultCase {
-    pub fn new(b: Block) -> DefaultCase {
-        DefaultCase { block: b }
-    }
-}
-
-
-
 /*
- * Assignments/Labels
+ * Linker Symbol
  */
-
-#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
-pub struct Assignment {
-    pub identifier: Identifier,
-}
-
-impl Assignment {
-    pub fn new(i: Identifier) -> Assignment {
-        Assignment { identifier: i }
-    }
-}
-
-#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
-pub struct LabelDefinition {
-    pub identifier: Identifier,
-}
-
-impl LabelDefinition {
-    pub fn new(i: Identifier) -> LabelDefinition {
-        LabelDefinition { identifier: i }
-    }
-}
-
-
-
-/*
- * Identifiers
- */
-#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
-pub struct Identifier {
-    pub symbol: String,
-}
-
-impl Identifier {
-    pub fn new(s: &str) -> Identifier {
-        Identifier { symbol: s.to_string() }
-    }
-}
-
-
-/*
- * Linker Symbols
- */
-
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct LinkerSymbol {
-    pub symbol: String,
+    pub symbol: StringLiteral,
 }
 
 impl LinkerSymbol {
     pub fn new(s: StringLiteral) -> LinkerSymbol {
-        LinkerSymbol { symbol: s.string }
+        LinkerSymbol { symbol: s }
     }
+}
+
+/*
+ * Identifier
+ */
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+pub struct Identifier {
+  pub symbol: String,
+}
+
+impl Identifier {
+  pub fn new(s: &str) -> Identifier {
+    Identifier { symbol: s.to_string() }
+  }
 }
 
 
 /*
- * String Literals
+ * Literal
  */
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+pub enum Literal {
+  HexNumber(HexNumber),
+  DecNumber(DecNumber),
+  StringLiteral(StringLiteral),
+  HexLiteral(HexLiteral),
+}
 
+
+/*
+ * String Literal
+ */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct StringLiteral {
     pub string: String,
@@ -298,7 +307,6 @@ impl StringLiteral {
 /*
  * Hex Literals (Raw Hex Bytestring)
  */
-
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct HexLiteral {
     pub bytes: Vec<u8>,
@@ -314,7 +322,6 @@ impl HexLiteral {
 /*
  * Number Literals
  */
-
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct HexNumber {
     pub uint: U256,
@@ -325,7 +332,6 @@ impl HexNumber {
         HexNumber { uint: U256::from_str(uint).unwrap() }
     }
 }
-
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct DecNumber {
