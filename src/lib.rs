@@ -4,5 +4,6 @@ pub mod grammar {
 
 pub mod ast;
 
-pub fn parse(s: &str) -> std::result::Result<self::ast::Block, self::grammar::ParseError > { self::grammar::block(s) }
+pub fn parse(s: &str)
+    -> std::result::Result<ast::Node<ast::Block>, grammar::ParseError > { grammar::block(s) }
 

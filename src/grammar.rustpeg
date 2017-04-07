@@ -27,7 +27,7 @@ COMMENT_LINE    = "//"
 COMMENT_BEGIN   = "/*"
 COMMENT_END     = "*/"
 
-pub block -> Block
+pub block -> Node<Block>
   = LBRACE statements:(statement*)? __ RBRACE {
       match statements {
         Some(ss) => Block::new(ss),
@@ -35,30 +35,30 @@ pub block -> Block
       }
     }
 
-pub statement -> Statement
-  = b:block { Statement::Block(b) }
-  / d:function_definition { Statement::FunctionDefinition(d) }
-  / o:control_op { Statement::ControlOp(o) }
-  / s:switch { Statement::Switch(s) }
-  / d:variable_declaration { Statement::VariableDeclaration(d) }
-  / a:assignment { Statement::Assignment(a) }
-  / f:for_loop { Statement::ForLoop(f) }
-  / s:sub_assembly { Statement::SubAssembly(s) }
-  / e:expression { Statement::Expression(e) }
+pub statement -> Node<Statement>
+  = b:block { Node::new(Statement::Block(b)) }
+  / d:function_definition { Node::new(Statement::FunctionDefinition(d)) }
+  / o:control_op { Node::new(Statement::ControlOp(o)) }
+  / s:switch { Node::new(Statement::Switch(s)) }
+  / d:variable_declaration { Node::new(Statement::VariableDeclaration(d)) }
+  / a:assignment { Node::new(Statement::Assignment(a)) }
+  / f:for_loop { Node::new(Statement::ForLoop(f)) }
+  / s:sub_assembly { Node::new(Statement::SubAssembly(s)) }
+  / e:expression { Node::new(Statement::Expression(e)) }
 
-pub expression -> Expression
-  = l:literal { Expression::Literal(l) }
-  / c:function_call { Expression::FunctionCall(c) }
-  / i:identifier { Expression::Identifier(i) }
+pub expression -> Node<Expression>
+  = l:literal { Node::new(Expression::Literal(l)) }
+  / c:function_call { Node::new(Expression::FunctionCall(c)) }
+  / i:identifier { Node::new(Expression::Identifier(i)) }
 
-pub function_definition -> FunctionDefinition
+pub function_definition -> Node<FunctionDefinition>
   = FUNCTION i:identifier LPAREN args:identifier_list_or_empty RPAREN
       ARROW LPAREN returns:identifier_list RPAREN block:block
     { FunctionDefinition::new(i, args, Some(returns), block) }
   / FUNCTION i:identifier LPAREN args:identifier_list_or_empty RPAREN block:block
     { FunctionDefinition::new(i, args, None, block) }
 
-identifier_list_or_empty -> Vec<Identifier>
+identifier_list_or_empty -> Vec<Node<Identifier>>
   = opt:(identifier_list?)  {
       match opt {
         Some(identifiers) => identifiers,
@@ -66,55 +66,55 @@ identifier_list_or_empty -> Vec<Identifier>
       }
     }
 
-identifier_list -> Vec<Identifier>
+identifier_list -> Vec<Node<Identifier>>
   = i:identifier is:(identifier_list_clause*) {
       let mut identifiers = vec![i];
       identifiers.extend(is);
       identifiers
   }
 
-identifier_list_clause -> Identifier
+identifier_list_clause -> Node<Identifier>
   = COMMA i:identifier { i }
 
-pub variable_declaration -> VariableDeclaration
+pub variable_declaration -> Node<VariableDeclaration>
   = LET is:identifier_or_list EQUALTO e:expression {
       VariableDeclaration::new(is, e)
     }
 
-identifier_or_list -> Vec<Identifier>
+identifier_or_list -> Vec<Node<Identifier>>
   = LPAREN is:identifier_list RPAREN { is }
   / i:identifier { vec![i] }
 
-pub assignment -> Assignment
+pub assignment -> Node<Assignment>
   = is:identifier_or_list EQUALTO e:expression {
     Assignment::new(is, e)
   }
 
-pub switch -> Switch
+pub switch -> Node<Switch>
   = SWITCH e:expression cs:(case*) d:(default?) { Switch::new(e, cs, d) }
 
-pub case -> Case
+pub case -> Node<Case>
   = CASE e:expression COLON b:block { Case::new(e, b) }
 
-pub default -> Block
+pub default -> Node<Block>
   = DEFAULT COLON b:block { b }
 
-pub for_loop -> ForLoop
+pub for_loop -> Node<ForLoop>
   = FOR init:block condition:expression post:block body:block {
       ForLoop::new(init, condition, post, body)
     }
 
-pub control_op -> ControlOp
-  = BREAK { ControlOp::Break() }
-  / CONTINUE { ControlOp::Continue() }
+pub control_op -> Node<ControlOp>
+  = BREAK { Node::new(ControlOp::Break()) }
+  / CONTINUE { Node::new(ControlOp::Continue()) }
 
-pub sub_assembly -> SubAssembly
+pub sub_assembly -> Node<SubAssembly>
   = ASSEMBLY i:identifier b:block { SubAssembly::new(i, b) }
 
-pub function_call -> FunctionCall
+pub function_call -> Node<FunctionCall>
   = i:identifier LPAREN ss:statement_list RPAREN { FunctionCall::new(i, ss) }
 
-statement_list -> Vec<Statement>
+statement_list -> Vec<Node<Statement>>
   = first:statement rest:(statement_list_clause*) {
       let mut statements = vec![first];
       statements.extend(rest);
@@ -122,19 +122,19 @@ statement_list -> Vec<Statement>
     }
   / { vec![] }
 
-statement_list_clause -> Statement
+statement_list_clause -> Node<Statement>
   = COMMA s:statement { s }
 
-pub identifier -> Identifier
+pub identifier -> Node<Identifier>
   = __ name:$([a-zA-Z_$] [a-zA-Z_0-9]*) { Identifier::new(name) }
 
-pub literal -> Literal
-  = x:hex_number { Literal::HexNumber(x) }
-  / n:dec_number { Literal::DecNumber(n) }
-  / l:string_literal { Literal::StringLiteral(l) }
-  / l:hex_literal { Literal::HexLiteral(l) }
+pub literal -> Node<Literal>
+  = x:hex_number { Node::new(Literal::HexNumber(x)) }
+  / n:dec_number { Node::new(Literal::DecNumber(n)) }
+  / l:string_literal { Node::new(Literal::StringLiteral(l)) }
+  / l:hex_literal { Node::new(Literal::HexLiteral(l)) }
 
-pub string_literal -> StringLiteral
+pub string_literal -> Node<StringLiteral>
   = __ string:(double_quoted_string) { StringLiteral::new(string) }
 
 double_quoted_string -> String
@@ -143,7 +143,7 @@ double_quoted_string -> String
 double_quoted_character -> char
   = (!('"' / "\r" / "\n" / "\\") / "\\" .) c:$. { c.chars().next().unwrap() }
 
-pub hex_literal -> HexLiteral
+pub hex_literal -> Node<HexLiteral>
   = HEX b:bytestr { HexLiteral::new(b.as_str()) }
 
 bytestr -> String
@@ -153,10 +153,10 @@ bytestr -> String
 bytes -> String
   = b:$(([0-9A-Fa-f]{2})*) { b.to_string() }
 
-pub hex_number -> HexNumber
+pub hex_number -> Node<HexNumber>
   = _X uint:$([0-9A-Fa-f]+) { HexNumber::new(uint) }
 
-pub dec_number -> DecNumber
+pub dec_number -> Node<DecNumber>
   = __ uint:$([0-9]+) { DecNumber::new(uint) }
 
 __ = (whitespace / comment)*

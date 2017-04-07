@@ -16,8 +16,12 @@ pub struct Node<T> {
 }
 
 impl<T> Node<T> {
-  fn new(t: T) -> Node<T> {
+  pub fn new(t: T) -> Node<T> {
     Node { node: t }
+  }
+
+  pub fn unwrap(self) -> T {
+    self.node
   }
 }
 
@@ -27,12 +31,12 @@ impl<T> Node<T> {
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct Block {
-  pub statements: Vec<Statement>,
+  pub statements: Vec<Node<Statement>>,
 }
 
 impl Block {
-  pub fn new(statements: Vec<Statement>) -> Block {
-    Block { statements: statements }
+  pub fn new(statements: Vec<Node<Statement>>) -> Node<Block> {
+    Node::new(Block { statements: statements })
   }
 }
 
@@ -41,15 +45,15 @@ impl Block {
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub enum Statement {
-  Block(Block),
-  FunctionDefinition(FunctionDefinition),
-  VariableDeclaration(VariableDeclaration),
-  Assignment(Assignment),
-  Expression(Expression),
-  Switch(Switch),
-  ForLoop(ForLoop),
-  ControlOp(ControlOp),
-  SubAssembly(SubAssembly),
+  Block(Node<Block>),
+  FunctionDefinition(Node<FunctionDefinition>),
+  VariableDeclaration(Node<VariableDeclaration>),
+  Assignment(Node<Assignment>),
+  Expression(Node<Expression>),
+  Switch(Node<Switch>),
+  ForLoop(Node<ForLoop>),
+  ControlOp(Node<ControlOp>),
+  SubAssembly(Node<SubAssembly>),
 }
 
 /*
@@ -57,9 +61,9 @@ pub enum Statement {
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub enum Expression {
-  Identifier(Identifier),
-  Literal(Literal),
-  FunctionCall(FunctionCall),
+  Identifier(Node<Identifier>),
+  Literal(Node<Literal>),
+  FunctionCall(Node<FunctionCall>),
 }
 
 /*
@@ -67,24 +71,24 @@ pub enum Expression {
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct FunctionDefinition {
-  pub identifier: Identifier,
-  pub arguments: Vec<Identifier>,
-  pub returns: Option<Vec<Identifier>>,
-  pub block: Block,
+  pub identifier: Node<Identifier>,
+  pub arguments: Vec<Node<Identifier>>,
+  pub returns: Option<Vec<Node<Identifier>>>,
+  pub block: Node<Block>,
 }
 
 impl FunctionDefinition {
-  pub fn new(i: Identifier,
-             args: Vec<Identifier>,
-             returns: Option<Vec<Identifier>>,
-             block: Block,
-             ) -> FunctionDefinition {
-    FunctionDefinition {
+  pub fn new(i: Node<Identifier>,
+             args: Vec<Node<Identifier>>,
+             returns: Option<Vec<Node<Identifier>>>,
+             block: Node<Block>,
+             ) -> Node<FunctionDefinition> {
+    Node::new(FunctionDefinition {
       identifier: i,
       arguments: args,
       returns: returns,
       block: block,
-    }
+    })
   }
 }
 
@@ -93,16 +97,16 @@ impl FunctionDefinition {
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct VariableDeclaration {
-  pub identifiers: Vec<Identifier>,
-  pub expression: Expression,
+  pub identifiers: Vec<Node<Identifier>>,
+  pub expression: Node<Expression>,
 }
 
 impl VariableDeclaration {
-  pub fn new(is: Vec<Identifier>, e: Expression) -> VariableDeclaration {
-    VariableDeclaration {
+  pub fn new(is: Vec<Node<Identifier>>, e: Node<Expression>) -> Node<VariableDeclaration> {
+    Node::new(VariableDeclaration {
       identifiers: is,
       expression: e,
-    }
+    })
   }
 }
 
@@ -111,16 +115,16 @@ impl VariableDeclaration {
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct Assignment {
-  pub identifiers: Vec<Identifier>,
-  pub expression: Expression,
+  pub identifiers: Vec<Node<Identifier>>,
+  pub expression: Node<Expression>,
 }
 
 impl Assignment {
-  pub fn new(is: Vec<Identifier>, e: Expression) -> Assignment {
-    Assignment {
+  pub fn new(is: Vec<Node<Identifier>>, e: Node<Expression>) -> Node<Assignment> {
+    Node::new(Assignment {
       identifiers: is,
       expression: e,
-    }
+    })
   }
 }
 
@@ -129,18 +133,18 @@ impl Assignment {
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct Switch {
-  pub expression: Expression,
-  pub cases: Vec<Case>,
-  pub default: Option<Block>,
+  pub expression: Node<Expression>,
+  pub cases: Vec<Node<Case>>,
+  pub default: Option<Node<Block>>,
 }
 
 impl Switch {
-  pub fn new(e: Expression, cs: Vec<Case>, d: Option<Block>) -> Switch {
-    Switch {
+  pub fn new(e: Node<Expression>, cs: Vec<Node<Case>>, d: Option<Node<Block>>) -> Node<Switch> {
+    Node::new(Switch {
       expression: e,
       cases: cs,
       default: d,
-    }
+    })
   }
 }
 
@@ -149,16 +153,16 @@ impl Switch {
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct Case {
-  pub expression: Expression,
-  pub block: Block,
+  pub expression: Node<Expression>,
+  pub block: Node<Block>,
 }
 
 impl Case {
-  pub fn new(e: Expression, b: Block) -> Case {
-    Case {
+  pub fn new(e: Node<Expression>, b: Node<Block>) -> Node<Case> {
+    Node::new(Case {
       expression: e,
       block: b,
-    }
+    })
   }
 }
 
@@ -167,20 +171,20 @@ impl Case {
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct ForLoop {
-  pub init: Block,
-  pub condition: Expression,
-  pub post: Block,
-  pub body: Block,
+  pub init: Node<Block>,
+  pub condition: Node<Expression>,
+  pub post: Node<Block>,
+  pub body: Node<Block>,
 }
 
 impl ForLoop {
-  pub fn new(i: Block, c: Expression, p: Block, b: Block) -> ForLoop {
-    ForLoop {
+  pub fn new(i: Node<Block>, c: Node<Expression>, p: Node<Block>, b: Node<Block>) -> Node<ForLoop> {
+    Node::new(ForLoop {
       init: i,
       condition: c,
       post: p,
       body: b,
-    }
+    })
   }
 }
 
@@ -199,16 +203,16 @@ pub enum ControlOp {
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct SubAssembly {
-  pub identifier: Identifier,
-  pub block: Block,
+  pub identifier: Node<Identifier>,
+  pub block: Node<Block>,
 }
 
 impl SubAssembly {
-  pub fn new(i: Identifier, b: Block) -> SubAssembly {
-    SubAssembly {
+  pub fn new(i: Node<Identifier>, b: Node<Block>) -> Node<SubAssembly> {
+    Node::new(SubAssembly {
       identifier: i,
       block: b,
-    }
+    })
   }
 }
 
@@ -217,16 +221,16 @@ impl SubAssembly {
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct FunctionCall {
-  pub identifier: Identifier,
-  pub args: Vec<Statement>,
+  pub identifier: Node<Identifier>,
+  pub args: Vec<Node<Statement>>,
 }
 
 impl FunctionCall {
-  pub fn new(i: Identifier, args: Vec<Statement>) -> FunctionCall {
-    FunctionCall {
+  pub fn new(i: Node<Identifier>, args: Vec<Node<Statement>>) -> Node<FunctionCall> {
+    Node::new(FunctionCall {
       identifier: i,
       args: args,
-    }
+    })
   }
 }
 
@@ -239,8 +243,8 @@ pub struct Identifier {
 }
 
 impl Identifier {
-  pub fn new(s: &str) -> Identifier {
-    Identifier { symbol: s.to_string() }
+  pub fn new(s: &str) -> Node<Identifier> {
+    Node::new(Identifier { symbol: s.to_string() })
   }
 }
 
@@ -249,10 +253,10 @@ impl Identifier {
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub enum Literal {
-  HexNumber(HexNumber),
-  DecNumber(DecNumber),
-  StringLiteral(StringLiteral),
-  HexLiteral(HexLiteral),
+  HexNumber(Node<HexNumber>),
+  DecNumber(Node<DecNumber>),
+  StringLiteral(Node<StringLiteral>),
+  HexLiteral(Node<HexLiteral>),
 }
 
 /*
@@ -264,8 +268,8 @@ pub struct StringLiteral {
 }
 
 impl StringLiteral {
-  pub fn new(s: String) -> StringLiteral {
-    StringLiteral { string: s }
+  pub fn new(s: String) -> Node<StringLiteral> {
+    Node::new(StringLiteral { string: s })
   }
 }
 
@@ -279,8 +283,8 @@ pub struct HexLiteral {
 }
 
 impl HexLiteral {
-  pub fn new(bytes: &str) -> HexLiteral {
-    HexLiteral { bytes: bytes.from_hex().unwrap() }
+  pub fn new(bytes: &str) -> Node<HexLiteral> {
+    Node::new(HexLiteral { bytes: bytes.from_hex().unwrap() })
   }
 }
 
@@ -294,8 +298,8 @@ pub struct HexNumber {
 }
 
 impl HexNumber {
-  pub fn new(uint: &str) -> HexNumber {
-    HexNumber { uint: U256::from_str(uint).unwrap() }
+  pub fn new(uint: &str) -> Node<HexNumber> {
+    Node::new(HexNumber { uint: U256::from_str(uint).unwrap() })
   }
 }
 
@@ -305,7 +309,7 @@ pub struct DecNumber {
 }
 
 impl DecNumber {
-  pub fn new(uint: &str) -> DecNumber {
-    DecNumber { uint: U256::from_dec_str(uint).unwrap() }
+  pub fn new(uint: &str) -> Node<DecNumber> {
+    Node::new(DecNumber { uint: U256::from_dec_str(uint).unwrap() })
   }
 }
