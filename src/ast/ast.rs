@@ -231,14 +231,14 @@ impl SubAssembly {
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct FunctionCall {
   pub identifier: Node<Identifier>,
-  pub args: Vec<Node<Statement>>,
+  pub arguments: Vec<Node<Expression>>,
 }
 
 impl FunctionCall {
-  pub fn new(i: Node<Identifier>, args: Vec<Node<Statement>>) -> Node<FunctionCall> {
+  pub fn new(i: Node<Identifier>, args: Vec<Node<Expression>>) -> Node<FunctionCall> {
     Node::new(FunctionCall {
       identifier: i,
-      args: args,
+      arguments: args,
     })
   }
 }

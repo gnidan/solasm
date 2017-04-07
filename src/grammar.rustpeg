@@ -112,18 +112,18 @@ pub sub_assembly -> Node<SubAssembly>
   = ASSEMBLY i:identifier b:block { SubAssembly::new(i, b) }
 
 pub function_call -> Node<FunctionCall>
-  = i:identifier LPAREN ss:statement_list RPAREN { FunctionCall::new(i, ss) }
+  = i:identifier LPAREN es:expression_list RPAREN { FunctionCall::new(i, es) }
 
-statement_list -> Vec<Node<Statement>>
-  = first:statement rest:(statement_list_clause*) {
-      let mut statements = vec![first];
-      statements.extend(rest);
-      statements
+expression_list -> Vec<Node<Expression>>
+  = first:expression rest:(expression_list_clause*) {
+      let mut expressions = vec![first];
+      expressions.extend(rest);
+      expressions
     }
   / { vec![] }
 
-statement_list_clause -> Node<Statement>
-  = COMMA s:statement { s }
+expression_list_clause -> Node<Expression>
+  = COMMA e:expression { e }
 
 pub identifier -> Node<Identifier>
   = __ name:$([a-zA-Z_$] [a-zA-Z_0-9]*) { Identifier::new(name) }
