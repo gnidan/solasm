@@ -46,13 +46,10 @@ pub enum Statement {
   VariableDeclaration(VariableDeclaration),
   Assignment(Assignment),
   Expression(Expression),
-  LabelDefinition(LabelDefinition),
   Switch(Switch),
   ForLoop(ForLoop),
   ControlOp(ControlOp),
   SubAssembly(SubAssembly),
-  DataSize(DataSize),
-  LinkerSymbol(LinkerSymbol),
 }
 
 /*
@@ -63,20 +60,6 @@ pub enum Expression {
   Identifier(Identifier),
   Literal(Literal),
   FunctionCall(FunctionCall),
-}
-
-/*
- * Label Definition
- */
-#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
-pub struct LabelDefinition {
-  pub identifier: Identifier,
-}
-
-impl LabelDefinition {
-  pub fn new(i: Identifier) -> LabelDefinition {
-    LabelDefinition { identifier: i }
-  }
 }
 
 /*
@@ -212,20 +195,6 @@ pub enum ControlOp {
 }
 
 /*
- * Data
- */
-#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
-pub struct DataSize {
-  pub identifier: Identifier,
-}
-
-impl DataSize {
-  pub fn new(i: Identifier) -> DataSize {
-    DataSize { identifier: i }
-  }
-}
-
-/*
  * Sub-Assembly
  */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
@@ -258,20 +227,6 @@ impl FunctionCall {
       identifier: i,
       args: args,
     }
-  }
-}
-
-/*
- * Linker Symbol
- */
-#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
-pub struct LinkerSymbol {
-  pub symbol: StringLiteral,
-}
-
-impl LinkerSymbol {
-  pub fn new(s: StringLiteral) -> LinkerSymbol {
-    LinkerSymbol { symbol: s }
   }
 }
 

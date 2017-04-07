@@ -102,24 +102,6 @@ fn it_parses_for_loops() {
     assert_parses_ok(assembly);
 }
 
-#[test]
-fn it_parses_labels_and_declaration() {
-    let assembly = r#"{
-        let n := calldataload(4)
-        let a := 1
-        let b := a
-    loop:
-        jumpi(loopend, eq(n, 0))
-        a add swap1
-        n := sub(n, 1)
-        jump(loop)
-    loopend:
-        mstore(0, a)
-        return(0, 0x20)
-    }"#;
-    assert_parses_ok(assembly);
-}
-
 
 fn assert_parses_ok(assembly: &str) {
     let result = parse(assembly);

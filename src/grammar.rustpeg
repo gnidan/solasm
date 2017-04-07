@@ -11,8 +11,6 @@ LET             = __ "let"
 EQUALTO         = __ ":="
 BREAK           = __ "break"
 CONTINUE        = __ "continue"
-BYTECODESIZE    = __ "bytecodeSize"
-DATASIZE        = __ "dataSize"
 HEX             = __ "hex"
 _X              = __ "0x"
 FOR             = __ "for"
@@ -21,7 +19,6 @@ CASE            = __ "case"
 DEFAULT         = __ "default"
 ASSEMBLY        = __ "assembly"
 FUNCTION        = __ "function"
-LINKERSYMBOL    = __ "linkerSymbol"
 DQUOTE_BEGIN    = __ "\""
 DQUOTE_END      = "\""
 SQUOTE_BEGIN    = __ "\'"
@@ -45,20 +42,14 @@ pub statement -> Statement
   / s:switch { Statement::Switch(s) }
   / d:variable_declaration { Statement::VariableDeclaration(d) }
   / a:assignment { Statement::Assignment(a) }
-  / l:label_definition { Statement::LabelDefinition(l) }  // included??
   / f:for_loop { Statement::ForLoop(f) }
   / s:sub_assembly { Statement::SubAssembly(s) }
-  / d:data_size { Statement::DataSize(d) }
-  / l:linker_symbol { Statement::LinkerSymbol(l) }
   / e:expression { Statement::Expression(e) }
 
 pub expression -> Expression
   = l:literal { Expression::Literal(l) }
   / c:function_call { Expression::FunctionCall(c) }
   / i:identifier { Expression::Identifier(i) }
-
-pub label_definition -> LabelDefinition
-  = i:identifier COLON { LabelDefinition::new(i) }
 
 pub function_definition -> FunctionDefinition
   = FUNCTION i:identifier LPAREN args:identifier_list_or_empty RPAREN
@@ -116,10 +107,6 @@ pub for_loop -> ForLoop
 pub control_op -> ControlOp
   = BREAK { ControlOp::Break() }
   / CONTINUE { ControlOp::Continue() }
-  / BYTECODESIZE { ControlOp::BytecodeSize() }
-
-pub data_size -> DataSize
-  = DATASIZE LPAREN i:identifier RPAREN { DataSize::new(i) }
 
 pub sub_assembly -> SubAssembly
   = ASSEMBLY i:identifier b:block { SubAssembly::new(i, b) }
@@ -137,9 +124,6 @@ statement_list -> Vec<Statement>
 
 statement_list_clause -> Statement
   = COMMA s:statement { s }
-
-pub linker_symbol -> LinkerSymbol
-  = LINKERSYMBOL LPAREN s:string_literal RPAREN { LinkerSymbol::new(s) }
 
 pub identifier -> Identifier
   = __ name:$([a-zA-Z_$] [a-zA-Z_0-9]*) { Identifier::new(name) }
