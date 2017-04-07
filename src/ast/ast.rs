@@ -7,6 +7,19 @@ use self::bigint::{U256, Uint};
 extern crate rustc_serialize;
 use self::rustc_serialize::hex::FromHex;
 
+/*
+ * Generic Node
+ */
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+pub struct Node<T> {
+  node: T,
+}
+
+impl<T> Node<T> {
+  fn new(t: T) -> Node<T> {
+    Node { node: t }
+  }
+}
 
 /*
  * Block
@@ -276,7 +289,6 @@ impl Identifier {
   }
 }
 
-
 /*
  * Literal
  */
@@ -287,7 +299,6 @@ pub enum Literal {
   StringLiteral(StringLiteral),
   HexLiteral(HexLiteral),
 }
-
 
 /*
  * String Literal
