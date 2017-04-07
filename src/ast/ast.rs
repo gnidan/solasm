@@ -1,5 +1,6 @@
 use std::str::FromStr;
 use std::vec::Vec;
+use std::ops::{Deref};
 
 extern crate bigint;
 use self::bigint::{U256, Uint};
@@ -22,6 +23,14 @@ impl<T> Node<T> {
 
   pub fn unwrap(self) -> T {
     self.node
+  }
+}
+
+impl<T> Deref for Node<T> {
+  type Target = T;
+
+  fn deref(&self) -> &T {
+    &self.node
   }
 }
 
