@@ -83,20 +83,20 @@ pub struct FunctionDefinition {
   pub identifier: Node<Identifier>,
   pub arguments: Vec<Node<Identifier>>,
   pub returns: Option<Vec<Node<Identifier>>>,
-  pub block: Node<Block>,
+  pub body: Node<Block>,
 }
 
 impl FunctionDefinition {
   pub fn new(i: Node<Identifier>,
              args: Vec<Node<Identifier>>,
              returns: Option<Vec<Node<Identifier>>>,
-             block: Node<Block>,
+             body: Node<Block>,
              ) -> Node<FunctionDefinition> {
     Node::new(FunctionDefinition {
       identifier: i,
       arguments: args,
       returns: returns,
-      block: block,
+      body: body,
     })
   }
 }
