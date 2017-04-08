@@ -57,6 +57,9 @@ impl<S: ConfiguredState> Processor<S> {
         buf_reader.read_to_string(&mut buffer).ok();
         buffer
       },
+      Config { source: Source::Literal { source }, .. } => {
+        source
+      }
     }
   }
 }

@@ -23,6 +23,11 @@ impl Config {
     self
   }
 
+  pub fn source_str<'a>(&'a mut self, src: &str) -> &'a mut Config {
+    self.source = Source::Literal { source: String::from(src) };
+    self
+  }
+
   pub fn target<'a>(&'a mut self, target: Target) -> &'a mut Config {
     self.targets.insert(target);
     self
@@ -37,6 +42,7 @@ impl Config {
 pub enum Source {
   Input,
   File { filename: String },
+  Literal { source: String },
 }
 
 impl Default for Source {
