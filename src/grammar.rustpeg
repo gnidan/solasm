@@ -28,7 +28,7 @@ COMMENT_BEGIN   = "/*"
 COMMENT_END     = "*/"
 
 pub block -> Node<Block>
-  = LBRACE statements:(statement*)? __ RBRACE {
+  = LBRACE statements:(statement*)? __ RBRACE __ {
       match statements {
         Some(ss) => Block::new(ss),
         None => Block::new(vec![]),

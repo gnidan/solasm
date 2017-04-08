@@ -1,4 +1,4 @@
-use std::fmt::Write;
+use std::io::Write;
 
 use ast::*;
 use self::visitor::*;
@@ -53,7 +53,10 @@ impl<'v, W:Write> Visitor<'v> for PrettyPrinter<'v, W> {
       0 => { write!(&mut self.out, " ").ok(); },
       1 => {
         write!(&mut self.out, " ").ok();
+        let old_statement_newlines = self.statement_newlines;
+        self.statement_newlines = false;
         b.walk(self);
+        self.statement_newlines = old_statement_newlines;
         write!(&mut self.out, " ").ok();
       },
       _ => {
@@ -139,6 +142,108 @@ impl<'v, W:Write> Visitor<'v> for PrettyPrinter<'v, W> {
     }
   }
 
+  fn visit_assignment(&mut self, v: &'v Node<Assignment>) {
+    match **v {
+      Assignment { ref identifiers, .. } => {
+        if identifiers.len() == 1 {
+          self.visit_identifier(&identifiers[0]);
+        } else {
+          self.print_before_list();
+          for (i, identifier) in identifiers.iter().enumerate() {
+            if i != 0 {
+              self.print_between_list_items();
+            }
+
+            self.visit_identifier(identifier);
+          }
+          self.print_after_list();
+        }
+      }
+    }
+
+    write!(&mut self.out, " := ").ok();
+    match **v {
+      Assignment { ref expression, .. } => {
+        self.visit_expression(expression);
+      }
+    }
+  }
+
+  fn visit_switch(&mut self, f: &'v Node<Switch>) {
+    write!(&mut self.out, "switch ").ok();
+    match **f {
+      Switch { ref expression, ref cases, ref default } => {
+        self.visit_expression(expression);
+
+        for case in cases {
+          if self.statement_newlines {
+            self.newline();
+          } else {
+            write!(&mut self.out, " ").ok();
+          }
+          self.visit_case(case);
+        }
+
+        match *default {
+          Some(ref block) => {
+            if self.statement_newlines {
+              self.newline();
+            } else {
+              write!(&mut self.out, " ").ok();
+            }
+            write!(&mut self.out, "default: ").ok();
+            self.visit_block(block);
+          },
+          None => {}
+        }
+      }
+    }
+  }
+
+  fn visit_case(&mut self, f: &'v Node<Case>) {
+    write!(&mut self.out, "case ").ok();
+    match **f {
+      Case { ref expression, ref block } => {
+        self.visit_expression(expression);
+        write!(&mut self.out, ": ").ok();
+        self.visit_block(block);
+      }
+    }
+  }
+
+  fn visit_for_loop(&mut self, f: &'v Node<ForLoop>) {
+    write!(&mut self.out, "for ").ok();
+    match **f {
+      ForLoop { ref init, ref condition, ref post, ref body } => {
+        self.visit_block(init);
+        write!(&mut self.out, " ").ok();
+        self.visit_expression(condition);
+        write!(&mut self.out, " ").ok();
+        self.visit_block(post);
+        write!(&mut self.out, " ").ok();
+        self.visit_block(body);
+      }
+    }
+  }
+
+  fn visit_control_op(&mut self, o: &'v Node<ControlOp>) {
+    match **o {
+      ControlOp::Break() => { write!(&mut self.out, "break").ok(); },
+      ControlOp::Continue() => { write!(&mut self.out, "continue").ok(); },
+    }
+  }
+
+  fn visit_sub_assembly(&mut self, a: &'v Node<SubAssembly>) {
+    match **a {
+      SubAssembly { ref identifier, ref block } => {
+        write!(&mut self.out, "assembly ").ok();
+        self.visit_identifier(identifier);
+        write!(&mut self.out, " ").ok();
+        self.visit_block(block);
+      }
+    }
+  }
+
   fn visit_function_call(&mut self, c: &'v Node<FunctionCall>) {
     match **c {
       FunctionCall { ref identifier, ref arguments } => {
@@ -179,11 +284,24 @@ impl<'v, W:Write> Visitor<'v> for PrettyPrinter<'v, W> {
 }
 
 #[cfg(test)]
-fn assert_print_quine(program: &str) {
-  let block = grammar::block(program).unwrap();
-  let mut s = String::new();
-  PrettyPrinter::print(&block, &mut s);
+use super::super::parse;
 
+#[cfg(test)]
+use std::io::BufWriter;
+
+#[cfg(test)]
+use std::str::from_utf8;
+
+#[cfg(test)]
+fn assert_print_quine(program: &str) {
+  let block = parse(program).unwrap();
+  let mut buf = vec![];
+  {
+    let mut out : BufWriter<_> = BufWriter::new(&mut buf);
+    PrettyPrinter::print(&block, &mut out);
+  }
+
+  let s: &str = from_utf8(&mut buf).unwrap();
   if s != program {
     println!("{}", s);
     panic!("source doesn't line up with output");
@@ -192,19 +310,14 @@ fn assert_print_quine(program: &str) {
 
 #[test]
 fn it_writes_braces() {
-  let block = grammar::block("{ let (i, j) := 0 j k }").unwrap();
-
-  let mut s = String::new();
-  PrettyPrinter::print(&block, &mut s);
-
-  let expected =
+  let program =
 r#"{
   let (i, j) := 0
   j
   k
 }"#;
 
-  assert_eq!(s, expected);
+  assert_print_quine(program);
 }
 
 #[test]
@@ -232,5 +345,51 @@ fn it_writes_functions() {
   }
   let frobbed := frobinate(x, y)
 }"#;
+  assert_print_quine(program);
+}
+
+#[test]
+fn it_writes_switches() {
+  let mut program;
+  program = r#"{ switch i case 0: {
+  i
+  j
+  k
+} case 1: { foo } default: { } }"#;
+  assert_print_quine(program);
+
+  program = r#"{
+  switch i
+  case 0: {
+    i
+    j
+    k
+  }
+  case 1: { foo }
+  default: { }
+  i
+}"#;
+  assert_print_quine(program);
+}
+
+#[test]
+fn it_writes_for_loops() {
+  let program;
+  program = r#"{ for { let i := 0 } lt(i, 5) { i := add(i, 1) } {
+  i
+  j
+  k
+} }"#;
+  assert_print_quine(program);
+}
+
+#[test]
+fn it_writes_sub_assemblies() {
+  let program;
+  program = r#"{ assembly fnord { for { let i := 0 } lt(i, 5) { i := add(i, 1) } {
+  i
+  j
+  k
+} } }"#;
   assert_print_quine(program);
 }
