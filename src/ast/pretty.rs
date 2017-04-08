@@ -1,7 +1,5 @@
 use std::fmt::Write;
 
-
-use super::super::grammar;
 use ast::*;
 use self::visitor::*;
 
@@ -44,17 +42,6 @@ impl<'a, W: Write> PrettyPrinter<'a, W> {
   fn print_after_list(&mut self) {
     write!(&mut self.out, ")").ok();
   }
-
-  fn print_list<T, F>(&mut self, items: &'a Vec<Node<T>>, f: F)
-    where T: 'a, F: Fn(&'a Node<T>)
-  {
-    write!(&mut self.out, "(").ok();
-    for ref item in items {
-      f(&item);
-      write!(&mut self.out, ", ").ok();
-    }
-  }
-
 }
 
 impl<'v, W:Write> Visitor<'v> for PrettyPrinter<'v, W> {
@@ -88,7 +75,7 @@ impl<'v, W:Write> Visitor<'v> for PrettyPrinter<'v, W> {
   }
 
   fn visit_function_definition(&mut self, f: &'v Node<FunctionDefinition>) {
-    write!(&mut self.out, "function ");
+    write!(&mut self.out, "function ").ok();
     match **f {
       FunctionDefinition { ref identifier, ref arguments, ref returns, ref body } => {
         self.visit_identifier(identifier);
@@ -125,7 +112,7 @@ impl<'v, W:Write> Visitor<'v> for PrettyPrinter<'v, W> {
   }
 
   fn visit_variable_declaration(&mut self, v: &'v Node<VariableDeclaration>) {
-    write!(&mut self.out, "let ");
+    write!(&mut self.out, "let ").ok();
     match **v {
       VariableDeclaration { ref identifiers, .. } => {
         if identifiers.len() == 1 {
@@ -144,7 +131,7 @@ impl<'v, W:Write> Visitor<'v> for PrettyPrinter<'v, W> {
       }
     }
 
-    write!(&mut self.out, " := ");
+    write!(&mut self.out, " := ").ok();
     match **v {
       VariableDeclaration { ref expression, .. } => {
         self.visit_expression(expression);
@@ -174,23 +161,24 @@ impl<'v, W:Write> Visitor<'v> for PrettyPrinter<'v, W> {
   }
 
   fn visit_string_literal(&mut self, s: &'v Node<StringLiteral>) {
-    write!(&mut self.out, "\"{}\"", (*s).string);
+    write!(&mut self.out, "\"{}\"", (*s).string).ok();
   }
 
   fn visit_hex_literal(&mut self, x: &'v Node<HexLiteral>) {
-    write!(&mut self.out, "hex\"{:?}\"", (*x).bytes);
+    write!(&mut self.out, "hex\"{:?}\"", (*x).bytes).ok();
   }
 
   fn visit_hex_number(&mut self, x: &'v Node<HexNumber>) {
-    write!(&mut self.out, "{:x}", (*x).uint);
+    write!(&mut self.out, "{:x}", (*x).uint).ok();
   }
 
   fn visit_dec_number(&mut self, n: &'v Node<DecNumber>) {
-    write!(&mut self.out, "{}", (*n).uint);
+    write!(&mut self.out, "{}", (*n).uint).ok();
   }
 
 }
 
+#[cfg(test)]
 fn assert_print_quine(program: &str) {
   let block = grammar::block(program).unwrap();
   let mut s = String::new();

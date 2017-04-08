@@ -37,7 +37,7 @@ pub trait Visitor<'v> : Sized {
     &f.walk(self);
   }
 
-  fn visit_control_op(&mut self, o: &'v Node<ControlOp>) {
+  fn visit_control_op(&mut self, _: &'v Node<ControlOp>) {
     // leaf node
   }
 
@@ -49,7 +49,7 @@ pub trait Visitor<'v> : Sized {
     &c.walk(self);
   }
 
-  fn visit_identifier(&mut self, i: &'v Node<Identifier>) {
+  fn visit_identifier(&mut self, _: &'v Node<Identifier>) {
     // leaf node
   }
 
@@ -57,25 +57,25 @@ pub trait Visitor<'v> : Sized {
     &l.walk(self);
   }
 
-  fn visit_string_literal(&mut self, s: &'v Node<StringLiteral>) {
+  fn visit_string_literal(&mut self, _: &'v Node<StringLiteral>) {
     // leaf node
   }
 
-  fn visit_hex_literal(&mut self, x: &'v Node<HexLiteral>) {
+  fn visit_hex_literal(&mut self, _: &'v Node<HexLiteral>) {
     // leaf node
   }
 
-  fn visit_hex_number(&mut self, x: &'v Node<HexNumber>) {
+  fn visit_hex_number(&mut self, _: &'v Node<HexNumber>) {
     // leaf node
   }
 
-  fn visit_dec_number(&mut self, n: &'v Node<DecNumber>) {
+  fn visit_dec_number(&mut self, _: &'v Node<DecNumber>) {
     // leaf node
   }
 }
 
 pub trait Walkable<'w> {
-  fn walk<V: Visitor<'w>>(&'w self, visitor: &mut V) {
+  fn walk<V: Visitor<'w>>(&'w self, _: &mut V) {
   }
 }
 
