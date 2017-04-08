@@ -2,7 +2,6 @@
 mod tests {
     extern crate solasm;
     extern crate bigint;
-    extern crate env_logger;
     use self::solasm::parse;
     // use self::solasm::grammar::*;
     // use self::solasm::ast::{Statement, Expression, ControlOp};
@@ -46,7 +45,6 @@ mod tests {
 
     #[test]
     fn it_parses_switches_and_functions() {
-        let _ = env_logger::init();
         let assembly = r#"
         {
           mstore(0x40, 0x60) // store the "free memory pointer"
