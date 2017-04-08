@@ -24,7 +24,7 @@ fn main() {
   let result = parse(buffer.as_str());
   if result.is_err() {
     let err = result.err().unwrap();
-    println!("error {}", err);
+    println!("Parse Error!\n{}", err);
     process::exit(1);
   }
 
