@@ -1,7 +1,11 @@
 #![feature(plugin)]
 #![plugin(peg_syntax_ext)]
 
-peg_file! grammar("grammar.rustpeg");
+peg_file! _grammar("grammar.rustpeg");
+
+pub mod grammar {
+    pub use super::_grammar::*;
+}
 
 pub mod ast;
 

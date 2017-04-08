@@ -2,7 +2,6 @@
 name = "solasm"
 version = "0.1.0"
 authors = ["g. nicholas d'andrea <nick@gnidan.org>"]
-build = "build.rs"
 
 [dependencies]
 clap = "2.23.1"
