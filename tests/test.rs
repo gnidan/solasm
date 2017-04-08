@@ -2,7 +2,7 @@
 mod tests {
     extern crate solasm;
     extern crate bigint;
-    use self::solasm::parse;
+    use self::solasm::grammar;
     // use self::solasm::grammar::*;
     // use self::solasm::ast::{Statement, Expression, ControlOp};
     // use self::bigint::U256;
@@ -103,7 +103,7 @@ mod tests {
     }
 
     fn assert_parses_ok(assembly: &str) {
-        let result = parse(assembly);
+        let result = grammar::block(assembly);
         match result {
             Ok(tree) => { println!("{:?}", tree) },
             Err(err) => { panic!("{:?}", err) },

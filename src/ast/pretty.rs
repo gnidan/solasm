@@ -284,7 +284,7 @@ impl<'v, W:Write> Visitor<'v> for PrettyPrinter<'v, W> {
 }
 
 #[cfg(test)]
-use super::super::parse;
+use super::super::grammar;
 
 #[cfg(test)]
 use std::io::BufWriter;
@@ -294,7 +294,7 @@ use std::str::from_utf8;
 
 #[cfg(test)]
 fn assert_print_quine(program: &str) {
-  let block = parse(program).unwrap();
+  let block = grammar::block(program).unwrap();
   let mut buf = vec![];
   {
     let mut out : BufWriter<_> = BufWriter::new(&mut buf);
