@@ -23,3 +23,6 @@ name = "solasm"
 name = "solasm"
 test = false
 doc = false
+
+[badges]
+travis-ci = { repository = "gnidan/solasm" }
