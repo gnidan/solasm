@@ -15,3 +15,11 @@ env_logger = "0.3"
 
 [build-dependencies]
 peg = { version = "0.5" }
+
+[lib]
+name = "solasm"
+
+[[bin]]
+name = "solasm"
+test = false
+doc = false
