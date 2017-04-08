@@ -18,6 +18,7 @@ peg = { version = "0.5" }
 
 [lib]
 name = "solasm"
+doctest = false
 
 [[bin]]
 name = "solasm"
