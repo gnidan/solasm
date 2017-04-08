@@ -2,6 +2,7 @@
 Solidity Assembler in Rust
 
 [![Build Status](https://travis-ci.org/gnidan/solasm.svg?branch=master)](https://travis-ci.org/gnidan/solasm)
+[![Coverage Status](https://coveralls.io/repos/github/gnidan/solasm/badge.svg?branch=master)](https://coveralls.io/github/gnidan/solasm?branch=master)
 
 ## Current Status
 
