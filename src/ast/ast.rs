@@ -204,7 +204,6 @@ impl ForLoop {
 pub enum ControlOp {
   Break(),
   Continue(),
-  BytecodeSize(),
 }
 
 /*
