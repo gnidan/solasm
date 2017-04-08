@@ -9,6 +9,7 @@ clap = "2.23.1"
 rustc-serialize = "0.3"
 bigint = "1.0"
 log = "0.3.7"
+peg-syntax-ext = { version = "0.5.0", optional = true }
 
 [dev-dependencies]
 env_logger = "0.3"
@@ -24,6 +25,9 @@ doctest = false
 name = "solasm"
 test = false
 doc = false
+
+[features]
+nightly = ["peg-syntax-ext"]
 
 [badges]
 travis-ci = { repository = "gnidan/solasm" }
