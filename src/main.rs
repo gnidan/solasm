@@ -13,7 +13,7 @@ fn main() {
     (version: "0.1.0")
     (author: "g. nicholas d'andrea <nick@gnidan.org>")
     (about: "EVM Assembly Language compiler")
-    (@arg ast: --ast  "Output formatted assembly")
+    (@arg ast: --ast "Output formatted assembly")
   ).get_matches();
 
   let output_ast = args.is_present("ast");

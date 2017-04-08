@@ -94,7 +94,7 @@ impl<'v, W:Write> Visitor<'v> for PrettyPrinter<'v, W> {
 
         match *returns {
           Some(ref identifiers) => {
-            write!(&mut self.out, " ->").ok();
+            write!(&mut self.out, " -> ").ok();
             self.print_before_list();
             for (i, identifier) in identifiers.iter().enumerate() {
               if i != 0 {
