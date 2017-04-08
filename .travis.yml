@@ -19,6 +19,7 @@ script:
   - |
     travis-cargo build &&
     travis-cargo test &&
+    travis-cargo coverage &&
     travis-cargo --only beta doc
 
 after_success:
