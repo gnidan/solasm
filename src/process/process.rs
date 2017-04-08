@@ -69,3 +69,29 @@ impl<S: ParseResultState> Processor<S> {
     self.state.unwrap_parse_result()
   }
 }
+
+#[test]
+fn it_parses_correctly() {
+  let mut config = Config::new();
+  config.source_str("{ i }");
+
+  let result = Processor::new()
+    .configure(config.clone())
+    .parse()
+    .parse_result();
+
+  assert!(result.is_ok());
+}
+
+#[test]
+fn it_errors_correctly() {
+  let mut config = Config::new();
+  config.source_str("{ ! }");
+
+  let result = Processor::new()
+    .configure(config.clone())
+    .parse()
+    .parse_result();
+
+  assert!(result.is_err());
+}
