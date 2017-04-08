@@ -8,7 +8,7 @@ build = "build.rs"
 clap = "2.23.1"
 rustc-serialize = "0.3"
 bigint = "1.0"
-peg-syntax-ext = { version = "0.5.0", optional = true }
+peg-syntax-ext = "0.5.0"
 
 [build-dependencies]
 peg = { version = "0.5" }
@@ -21,9 +21,6 @@ doctest = false
 name = "solasm"
 test = false
 doc = false
-
-[features]
-nightly = ["peg-syntax-ext"]
 
 [badges]
 travis-ci = { repository = "gnidan/solasm" }
