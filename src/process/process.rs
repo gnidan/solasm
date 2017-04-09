@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::io::{self, Read, BufReader};
+use std::io::{self, Read, BufReader, BufWriter};
 
 use super::config::*;
 use super::state::*;
@@ -65,6 +65,26 @@ impl<S: ConfiguredState> Processor<S> {
 }
 
 impl<S: ParseResultState> Processor<S> {
+  pub fn target<'a>(self) -> Processor<WroteAssembly> {
+    let config = self.clone().config();
+    let result = self.clone().parse_result();
+
+    if config.clone().targets(Target::Assembly) {
+      match result {
+        Ok(tree) => {
+          let mut out : BufWriter<_> = BufWriter::new(io::stdout());
+          ast::pretty::PrettyPrinter::print(&tree, &mut out);
+        },
+        Err(err) => {
+        }
+      }
+    }
+
+    Processor {
+      state: WroteAssembly::new(self.clone().parse_result(), config)
+    }
+  }
+
   pub fn parse_result(self) -> grammar::ParseResult<ast::Node<ast::Block>> {
     self.state.unwrap_parse_result()
   }

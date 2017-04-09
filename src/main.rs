@@ -28,22 +28,22 @@ fn main() {
     config.source_file(args.value_of("filename").unwrap());
   }
 
-  let result = Processor::new()
+  Processor::new()
     .configure(config.clone())
     .parse()
-    .parse_result();
+    .target();
 
-  if result.is_err() {
-    let err = result.err().unwrap();
-    println!("Parse Error!\n{}", err);
-    process::exit(1);
-  }
+  // if result.is_err() {
+  //   let err = result.err().unwrap();
+  //   println!("Parse Error!\n{}", err);
+  //   process::exit(1);
+  // }
 
-  let ast = result.unwrap();
-  let mut out : BufWriter<_> = BufWriter::new(io::stdout());
+  // let ast = result.unwrap();
+  // let mut out : BufWriter<_> = BufWriter::new(io::stdout());
 
-  if config.targets(Target::Assembly) {
-    PrettyPrinter::print(&ast, &mut out);
-    write!(&mut out, "\n").ok();
-  }
+  // if config.targets(Target::Assembly) {
+  //   PrettyPrinter::print(&ast, &mut out);
+  //   write!(&mut out, "\n").ok();
+  // }
 }

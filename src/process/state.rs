@@ -70,3 +70,29 @@ impl ConfiguredState for Parsed {
 impl ParseResultState for Parsed {
   fn unwrap_parse_result(self) -> ParseResult<Node<Block>> { self.result }
 }
+
+
+/*
+ * WroteAssembly
+ */
+#[derive(Debug, Clone)]
+pub struct WroteAssembly {
+  config: Config,
+  result: ParseResult<Node<Block>>,
+}
+
+impl WroteAssembly {
+  pub fn new(result: ParseResult<Node<Block>>, config: Config) -> WroteAssembly {
+    WroteAssembly { config: config, result: result }
+  }
+}
+
+impl ProcessState for WroteAssembly { }
+
+impl ConfiguredState for WroteAssembly {
+  fn unwrap_config(self) -> Config { self.config }
+}
+
+impl ParseResultState for WroteAssembly {
+  fn unwrap_parse_result(self) -> ParseResult<Node<Block>> { self.result }
+}
