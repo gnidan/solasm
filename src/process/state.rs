@@ -1,7 +1,7 @@
-use super::config::*;
-use super::super::asm::ast::{Node, Block};
-use super::super::grammar::ParseResult;
 use std::fmt::Debug;
+use process::config::*;
+use asm::ast::{Node, Block};
+use asm::grammar::ParseResult;
 
 /*
  * Process State Traits

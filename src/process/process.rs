@@ -3,8 +3,7 @@ use std::io::{self, Read, BufReader, BufWriter};
 
 use super::config::*;
 use super::state::*;
-use super::super::asm;
-use super::super::grammar;
+use asm;
 
 #[derive(Debug, Clone, Default)]
 pub struct Processor<S: ProcessState> {
@@ -32,7 +31,7 @@ impl<S: ConfiguredState> Processor<S> {
   pub fn parse<'a>(self) -> Processor<Parsed> {
     let config = self.clone().config();
     let buffer = self.read(config.clone());
-    let result = grammar::block(buffer.as_str());
+    let result = asm::grammar::block(buffer.as_str());
 
     Processor {
       state: Parsed::new(result, config),
@@ -85,7 +84,9 @@ impl<S: ParseResultState> Processor<S> {
     }
   }
 
-  pub fn parse_result(self) -> grammar::ParseResult<asm::ast::Node<asm::ast::Block>> {
+  pub fn parse_result(self)
+    -> asm::grammar::ParseResult<asm::ast::Node<asm::ast::Block>>
+  {
     self.state.unwrap_parse_result()
   }
 }
