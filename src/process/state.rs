@@ -1,5 +1,5 @@
 use super::config::*;
-use super::super::ast::{Node, Block};
+use super::super::asm::ast::{Node, Block};
 use super::super::grammar::ParseResult;
 use std::fmt::Debug;
 

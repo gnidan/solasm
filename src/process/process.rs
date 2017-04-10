@@ -3,7 +3,7 @@ use std::io::{self, Read, BufReader, BufWriter};
 
 use super::config::*;
 use super::state::*;
-use super::super::ast;
+use super::super::asm;
 use super::super::grammar;
 
 #[derive(Debug, Clone, Default)]
@@ -73,7 +73,7 @@ impl<S: ParseResultState> Processor<S> {
       match result {
         Ok(tree) => {
           let mut out : BufWriter<_> = BufWriter::new(io::stdout());
-          ast::pretty::PrettyPrinter::print(&tree, &mut out);
+          asm::pretty::PrettyPrinter::print(&tree, &mut out);
         },
         Err(err) => {
         }
@@ -85,7 +85,7 @@ impl<S: ParseResultState> Processor<S> {
     }
   }
 
-  pub fn parse_result(self) -> grammar::ParseResult<ast::Node<ast::Block>> {
+  pub fn parse_result(self) -> grammar::ParseResult<asm::ast::Node<asm::ast::Block>> {
     self.state.unwrap_parse_result()
   }
 }

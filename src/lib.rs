@@ -7,5 +7,5 @@ pub mod grammar {
   pub use super::__grammar::*;
 }
 
-pub mod ast;
+pub mod asm;
 pub mod process;

@@ -5,7 +5,7 @@ use std::process;
 extern crate clap;
 
 extern crate solasm;
-use solasm::ast::pretty::PrettyPrinter;
+use solasm::asm::pretty::PrettyPrinter;
 use solasm::process::Processor;
 use solasm::process::config::{Config, Target};
 

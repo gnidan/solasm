@@ -1,6 +1,6 @@
 use std::io::Write;
 
-use ast::*;
+use asm::ast::*;
 use self::visitor::*;
 
 pub struct PrettyPrinter<'a, W: 'a> {

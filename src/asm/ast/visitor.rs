@@ -1,4 +1,4 @@
-use ast::*;
+use super::ast::*;
 
 pub trait Visitor<'v> : Sized {
   fn visit_block(&mut self, b: &'v Node<Block>) {
