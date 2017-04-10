@@ -14,10 +14,11 @@ pub struct PrettyPrinter<'a, W: 'a> {
 impl<'a, W: Write> PrettyPrinter<'a, W> {
   pub fn print(block: &'a Node<Block>, out: &mut W) {
     PrettyPrinter {
-      indent: 0,
-      statement_newlines: false,
-      out: out,
-    }.visit_block(block);
+        indent: 0,
+        statement_newlines: false,
+        out: out,
+      }
+      .visit_block(block);
   }
 
   pub fn newline(&mut self) {
@@ -44,13 +45,15 @@ impl<'a, W: Write> PrettyPrinter<'a, W> {
   }
 }
 
-impl<'v, W:Write> Visitor<'v> for PrettyPrinter<'v, W> {
+impl<'v, W: Write> Visitor<'v> for PrettyPrinter<'v, W> {
   fn visit_block(&mut self, b: &'v Node<Block>) {
     let number_of_statements = (*b).statements.len();
 
     write!(&mut self.out, "{{").ok();
     match number_of_statements {
-      0 => { write!(&mut self.out, " ").ok(); },
+      0 => {
+        write!(&mut self.out, " ").ok();
+      }
       1 => {
         write!(&mut self.out, " ").ok();
         let old_statement_newlines = self.statement_newlines;
@@ -58,7 +61,7 @@ impl<'v, W:Write> Visitor<'v> for PrettyPrinter<'v, W> {
         b.walk(self);
         self.statement_newlines = old_statement_newlines;
         write!(&mut self.out, " ").ok();
-      },
+      }
       _ => {
         let old_statement_newlines = self.statement_newlines;
         self.statement_newlines = true;
@@ -73,7 +76,9 @@ impl<'v, W:Write> Visitor<'v> for PrettyPrinter<'v, W> {
   }
 
   fn visit_statement(&mut self, s: &'v Node<Statement>) {
-    if self.statement_newlines { self.newline(); }
+    if self.statement_newlines {
+      self.newline();
+    }
     &s.walk(self);
   }
 
@@ -104,7 +109,7 @@ impl<'v, W:Write> Visitor<'v> for PrettyPrinter<'v, W> {
               self.visit_identifier(identifier);
             }
             self.print_after_list();
-          },
+          }
           None => {}
         }
 
@@ -193,7 +198,7 @@ impl<'v, W:Write> Visitor<'v> for PrettyPrinter<'v, W> {
             }
             write!(&mut self.out, "default: ").ok();
             self.visit_block(block);
-          },
+          }
           None => {}
         }
       }
@@ -228,8 +233,12 @@ impl<'v, W:Write> Visitor<'v> for PrettyPrinter<'v, W> {
 
   fn visit_control_op(&mut self, o: &'v Node<ControlOp>) {
     match **o {
-      ControlOp::Break() => { write!(&mut self.out, "break").ok(); },
-      ControlOp::Continue() => { write!(&mut self.out, "continue").ok(); },
+      ControlOp::Break => {
+        write!(&mut self.out, "break").ok();
+      }
+      ControlOp::Continue => {
+        write!(&mut self.out, "continue").ok();
+      }
     }
   }
 
@@ -280,7 +289,6 @@ impl<'v, W:Write> Visitor<'v> for PrettyPrinter<'v, W> {
   fn visit_dec_number(&mut self, n: &'v Node<DecNumber>) {
     write!(&mut self.out, "{}", (*n).uint).ok();
   }
-
 }
 
 #[cfg(test)]
@@ -297,7 +305,7 @@ fn assert_print_quine(program: &str) {
   let block = grammar::block(program).unwrap();
   let mut buf = vec![];
   {
-    let mut out : BufWriter<_> = BufWriter::new(&mut buf);
+    let mut out: BufWriter<_> = BufWriter::new(&mut buf);
     PrettyPrinter::print(&block, &mut out);
   }
 
@@ -310,8 +318,7 @@ fn assert_print_quine(program: &str) {
 
 #[test]
 fn it_writes_braces() {
-  let program =
-r#"{
+  let program = r#"{
   let (i, j) := 0
   j
   k

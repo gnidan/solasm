@@ -16,7 +16,8 @@ fn main() {
     (about: "EVM Assembly Language compiler")
     (@arg ast: --ast "Output formatted assembly")
     (@arg filename: -f --filename[FILE] "Read from file instead of stdin")
-  ).get_matches();
+  )
+      .get_matches();
 
   let mut config = Config::new();
 

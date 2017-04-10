@@ -8,9 +8,7 @@ pub struct Config {
 
 impl Config {
   pub fn new() -> Config {
-    Config {
-      ..Default::default()
-    }
+    Config { ..Default::default() }
   }
 
   pub fn source_file<'a>(&'a mut self, filename: &str) -> &'a mut Config {
@@ -46,7 +44,9 @@ pub enum Source {
 }
 
 impl Default for Source {
-  fn default() -> Self { Source::Input }
+  fn default() -> Self {
+    Source::Input
+  }
 }
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]

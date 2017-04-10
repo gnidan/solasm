@@ -12,18 +12,13 @@ pub struct Processor<S: ProcessState> {
 
 impl Processor<New> {
   pub fn new() -> Processor<New> {
-    Processor {
-      state: New,
-      .. Default::default()
-    }
+    Processor { state: New, ..Default::default() }
   }
 }
 
 impl Processor<New> {
   pub fn configure<'a>(self, config: Config) -> Processor<Configured> {
-    Processor {
-      state: Configured::new(config),
-    }
+    Processor { state: Configured::new(config) }
   }
 }
 
@@ -33,9 +28,7 @@ impl<S: ConfiguredState> Processor<S> {
     let buffer = self.read(config.clone());
     let result = asm::grammar::block(buffer.as_str());
 
-    Processor {
-      state: Parsed::new(result, config),
-    }
+    Processor { state: Parsed::new(result, config) }
   }
 
   pub fn config<'a>(self) -> Config {
@@ -48,17 +41,15 @@ impl<S: ConfiguredState> Processor<S> {
         let mut buffer = String::new();
         io::stdin().read_to_string(&mut buffer).ok();
         buffer
-      },
+      }
       Config { source: Source::File { filename }, .. } => {
         let file = File::open(filename).unwrap();
         let mut buf_reader = BufReader::new(file);
         let mut buffer = String::new();
         buf_reader.read_to_string(&mut buffer).ok();
         buffer
-      },
-      Config { source: Source::Literal { source }, .. } => {
-        source
       }
+      Config { source: Source::Literal { source }, .. } => source,
     }
   }
 }
@@ -71,22 +62,17 @@ impl<S: ParseResultState> Processor<S> {
     if config.clone().targets(Target::Assembly) {
       match result {
         Ok(tree) => {
-          let mut out : BufWriter<_> = BufWriter::new(io::stdout());
+          let mut out: BufWriter<_> = BufWriter::new(io::stdout());
           asm::pretty::PrettyPrinter::print(&tree, &mut out);
-        },
-        Err(err) => {
         }
+        Err(err) => {}
       }
     }
 
-    Processor {
-      state: WroteAssembly::new(self.clone().parse_result(), config)
-    }
+    Processor { state: WroteAssembly::new(self.clone().parse_result(), config) }
   }
 
-  pub fn parse_result(self)
-    -> asm::grammar::ParseResult<asm::ast::Node<asm::ast::Block>>
-  {
+  pub fn parse_result(self) -> asm::grammar::ParseResult<asm::ast::Node<asm::ast::Block>> {
     self.state.unwrap_parse_result()
   }
 }
