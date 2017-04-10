@@ -284,7 +284,7 @@ impl<'v, W:Write> Visitor<'v> for PrettyPrinter<'v, W> {
 }
 
 #[cfg(test)]
-use super::super::grammar;
+use asm::grammar;
 
 #[cfg(test)]
 use std::io::BufWriter;

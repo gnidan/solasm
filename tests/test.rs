@@ -2,7 +2,7 @@
 mod tests {
     extern crate solasm;
     extern crate bigint;
-    use self::solasm::grammar;
+    use solasm::asm::grammar;
     // use self::solasm::grammar::*;
     // use self::solasm::ast::{Statement, Expression, ControlOp};
     // use self::bigint::U256;
