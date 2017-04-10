@@ -96,3 +96,33 @@ impl ConfiguredState for WroteAssembly {
 impl ParseResultState for WroteAssembly {
   fn unwrap_parse_result(self) -> ParseResult<Node<Block>> { self.result }
 }
+
+
+// Done
+//
+#[derive(Debug, Clone)]
+pub struct Done {
+}
+
+impl Done {
+  pub fn new() -> Done {
+    Done { }
+  }
+}
+
+impl ProcessState for Done { }
+
+
+// Error
+//
+#[derive(Debug, Clone)]
+pub struct Error {
+}
+
+impl Error {
+  pub fn new() -> Error {
+    Error { }
+  }
+}
+
+impl ProcessState for Error { }
