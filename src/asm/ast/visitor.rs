@@ -1,6 +1,6 @@
 use super::ast::*;
 
-pub trait Visitor<'v>: Sized {
+pub trait Visitor<'v> : Sized {
   fn visit_block(&mut self, b: &'v Node<Block>) {
     &b.walk(self);
   }
@@ -75,7 +75,8 @@ pub trait Visitor<'v>: Sized {
 }
 
 pub trait Walkable<'w> {
-  fn walk<V: Visitor<'w>>(&'w self, _: &mut V) {}
+  fn walk<V: Visitor<'w>>(&'w self, _: &mut V) {
+  }
 }
 
 impl<'w> Walkable<'w> for Node<Block> {
@@ -127,7 +128,7 @@ impl<'w> Walkable<'w> for Node<FunctionDefinition> {
             for ident in idents {
               visitor.visit_identifier(ident);
             }
-          }
+          },
           None => {}
         }
 
@@ -178,7 +179,7 @@ impl<'w> Walkable<'w> for Node<Switch> {
         match *default {
           Some(ref block) => {
             visitor.visit_block(block);
-          }
+          },
           None => {}
         }
       }
@@ -244,3 +245,4 @@ impl<'w> Walkable<'w> for Node<Literal> {
     }
   }
 }
+

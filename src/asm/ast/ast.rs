@@ -1,6 +1,6 @@
 use std::str::FromStr;
 use std::vec::Vec;
-use std::ops::Deref;
+use std::ops::{Deref};
 
 extern crate bigint;
 use self::bigint::{U256, Uint};
@@ -8,8 +8,9 @@ use self::bigint::{U256, Uint};
 extern crate rustc_serialize;
 use self::rustc_serialize::hex::FromHex;
 
-// Generic Node
-//
+/*
+ * Generic Node
+ */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct Node<T> {
   node: T,
@@ -33,8 +34,9 @@ impl<T> Deref for Node<T> {
   }
 }
 
-// Block
-//
+/*
+ * Block
+ */
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct Block {
@@ -47,8 +49,9 @@ impl Block {
   }
 }
 
-// Statement
-//
+/*
+ * Statement
+ */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub enum Statement {
   Block(Node<Block>),
@@ -62,8 +65,9 @@ pub enum Statement {
   SubAssembly(Node<SubAssembly>),
 }
 
-// Expression
-//
+/*
+ * Expression
+ */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub enum Expression {
   Identifier(Node<Identifier>),
@@ -71,8 +75,9 @@ pub enum Expression {
   FunctionCall(Node<FunctionCall>),
 }
 
-// Function Definition
-//
+/*
+ * Function Definition
+ */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct FunctionDefinition {
   pub identifier: Node<Identifier>,
@@ -85,19 +90,20 @@ impl FunctionDefinition {
   pub fn new(i: Node<Identifier>,
              args: Vec<Node<Identifier>>,
              returns: Option<Vec<Node<Identifier>>>,
-             body: Node<Block>)
-             -> Node<FunctionDefinition> {
+             body: Node<Block>,
+             ) -> Node<FunctionDefinition> {
     Node::new(FunctionDefinition {
-                identifier: i,
-                arguments: args,
-                returns: returns,
-                body: body,
-              })
+      identifier: i,
+      arguments: args,
+      returns: returns,
+      body: body,
+    })
   }
 }
 
-// Variable Declaration
-//
+/*
+ * Variable Declaration
+ */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct VariableDeclaration {
   pub identifiers: Vec<Node<Identifier>>,
@@ -107,14 +113,15 @@ pub struct VariableDeclaration {
 impl VariableDeclaration {
   pub fn new(is: Vec<Node<Identifier>>, e: Node<Expression>) -> Node<VariableDeclaration> {
     Node::new(VariableDeclaration {
-                identifiers: is,
-                expression: e,
-              })
+      identifiers: is,
+      expression: e,
+    })
   }
 }
 
-// Assignment
-//
+/*
+ * Assignment
+ */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct Assignment {
   pub identifiers: Vec<Node<Identifier>>,
@@ -124,14 +131,15 @@ pub struct Assignment {
 impl Assignment {
   pub fn new(is: Vec<Node<Identifier>>, e: Node<Expression>) -> Node<Assignment> {
     Node::new(Assignment {
-                identifiers: is,
-                expression: e,
-              })
+      identifiers: is,
+      expression: e,
+    })
   }
 }
 
-// Switch
-//
+/*
+ * Switch
+ */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct Switch {
   pub expression: Node<Expression>,
@@ -142,15 +150,16 @@ pub struct Switch {
 impl Switch {
   pub fn new(e: Node<Expression>, cs: Vec<Node<Case>>, d: Option<Node<Block>>) -> Node<Switch> {
     Node::new(Switch {
-                expression: e,
-                cases: cs,
-                default: d,
-              })
+      expression: e,
+      cases: cs,
+      default: d,
+    })
   }
 }
 
-// Case
-//
+/*
+ * Case
+ */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct Case {
   pub expression: Node<Expression>,
@@ -160,14 +169,15 @@ pub struct Case {
 impl Case {
   pub fn new(e: Node<Expression>, b: Node<Block>) -> Node<Case> {
     Node::new(Case {
-                expression: e,
-                block: b,
-              })
+      expression: e,
+      block: b,
+    })
   }
 }
 
-// For Loop
-//
+/*
+ * For Loop
+ */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct ForLoop {
   pub init: Node<Block>,
@@ -179,24 +189,26 @@ pub struct ForLoop {
 impl ForLoop {
   pub fn new(i: Node<Block>, c: Node<Expression>, p: Node<Block>, b: Node<Block>) -> Node<ForLoop> {
     Node::new(ForLoop {
-                init: i,
-                condition: c,
-                post: p,
-                body: b,
-              })
+      init: i,
+      condition: c,
+      post: p,
+      body: b,
+    })
   }
 }
 
-// Control Operation
-//
+/*
+ * Control Operation
+ */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub enum ControlOp {
   Break(),
   Continue(),
 }
 
-// Sub-Assembly
-//
+/*
+ * Sub-Assembly
+ */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct SubAssembly {
   pub identifier: Node<Identifier>,
@@ -206,14 +218,15 @@ pub struct SubAssembly {
 impl SubAssembly {
   pub fn new(i: Node<Identifier>, b: Node<Block>) -> Node<SubAssembly> {
     Node::new(SubAssembly {
-                identifier: i,
-                block: b,
-              })
+      identifier: i,
+      block: b,
+    })
   }
 }
 
-// Function Call
-//
+/*
+ * Function Call
+ */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct FunctionCall {
   pub identifier: Node<Identifier>,
@@ -223,14 +236,15 @@ pub struct FunctionCall {
 impl FunctionCall {
   pub fn new(i: Node<Identifier>, args: Vec<Node<Expression>>) -> Node<FunctionCall> {
     Node::new(FunctionCall {
-                identifier: i,
-                arguments: args,
-              })
+      identifier: i,
+      arguments: args,
+    })
   }
 }
 
-// Identifier
-//
+/*
+ * Identifier
+ */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct Identifier {
   pub symbol: String,
@@ -242,8 +256,9 @@ impl Identifier {
   }
 }
 
-// Literal
-//
+/*
+ * Literal
+ */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub enum Literal {
   HexNumber(Node<HexNumber>),
@@ -252,8 +267,9 @@ pub enum Literal {
   HexLiteral(Node<HexLiteral>),
 }
 
-// String Literal
-//
+/*
+ * String Literal
+ */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct StringLiteral {
   pub string: String,
@@ -266,8 +282,9 @@ impl StringLiteral {
 }
 
 
-// Hex Literals (Raw Hex Bytestring)
-//
+/*
+ * Hex Literals (Raw Hex Bytestring)
+ */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct HexLiteral {
   pub bytes: Vec<u8>,
@@ -280,8 +297,9 @@ impl HexLiteral {
 }
 
 
-// Number Literals
-//
+/*
+ * Number Literals
+ */
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct HexNumber {
   pub uint: U256,
