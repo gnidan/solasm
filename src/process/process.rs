@@ -27,13 +27,13 @@ impl Processor<New> {
 }
 
 impl<S: ConfiguredState> Processor<S> {
-  pub fn parse<'a>(self) -> ProcessResult<Parsed, Error> {
+  pub fn parse<'a>(self) -> ProcessResult<Parsed, ParseError> {
     let config = self.clone().config();
     let buffer = self.read(config.clone());
     let result = asm::grammar::block(buffer.as_str());
 
     result.and_then(|ast| Ok(Processor { state: Parsed::new(ast, config) }))
-      .or(Err(Processor { state: Error::new() }))
+      .or_else(|err| Err(Processor { state: ParseError::new(err) }))
   }
 
   pub fn config<'a>(self) -> Config {
@@ -60,7 +60,7 @@ impl<S: ConfiguredState> Processor<S> {
 }
 
 impl<S: ParsedState> Processor<S> {
-  pub fn target<'a>(self) -> ProcessResult<WroteAssembly, Error> {
+  pub fn target<'a, E: ErrorState>(self) -> ProcessResult<WroteAssembly, E> {
     let config = self.clone().config();
     let ast = self.clone().ast();
 
@@ -78,33 +78,15 @@ impl<S: ParsedState> Processor<S> {
 }
 
 impl<S: WroteOutputState> Processor<S> {
-  pub fn finish<'a>(self) -> ProcessResult<Done, Error> {
+  pub fn finish<'a, E: ErrorState>(self) -> ProcessResult<Done, E> {
     Ok(Processor { state: Done {} })
   }
 }
 
-#[test]
-fn it_parses_correctly() {
-  let mut config = Config::new();
-  config.source_str("{ i }");
-
-  let result = Processor::new()
-    .configure(config.clone())
-    .parse()
-    .parse_result();
-
-  assert!(result.is_ok());
-}
-
-#[test]
-fn it_errors_correctly() {
-  let mut config = Config::new();
-  config.source_str("{ ! }");
-
-  let result = Processor::new()
-    .configure(config.clone())
-    .parse()
-    .parse_result();
-
-  assert!(result.is_err());
+impl<E: ErrorState> Processor<E> {
+  pub fn err<'a>(self) -> ProcessResult<Done, Error> {
+    let mut out: BufWriter<_> = BufWriter::new(io::stderr());
+    self.state.write(&mut out);
+    Err(Processor { state: Error {} })
+  }
 }

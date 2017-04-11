@@ -1,13 +1,18 @@
 use std::fmt::Debug;
+use std::io::{Write};
 use process::config::*;
 use asm::ast::{Node, Block};
-use asm::grammar::ParseResult;
+use asm;
 
 // Process State Traits
 //
 pub trait ProcessState: Debug + Clone {}
 
-pub trait ErrorState: ProcessState {}
+pub trait ErrorState: ProcessState {
+  fn write<W: Write>(self, out: &mut W) {
+    write!(out, "{:?}\n", self);
+  }
+}
 
 
 pub trait ConfiguredState: ProcessState {
@@ -78,6 +83,28 @@ impl ConfiguredState for Parsed {
 impl ParsedState for Parsed {
   fn unwrap_ast(self) -> Node<Block> {
     self.ast
+  }
+}
+
+
+// ParseError
+//
+#[derive(Debug, Clone)]
+pub struct ParseError {
+  error: asm::grammar::ParseError
+}
+
+impl ParseError {
+  pub fn new(error: asm::grammar::ParseError) -> ParseError {
+    ParseError { error: error }
+  }
+}
+
+impl ProcessState for ParseError {}
+
+impl ErrorState for ParseError {
+  fn write<W: Write>(self, out: &mut W) {
+    write!(out, "ParseError: {}\n", self.error);
   }
 }
 

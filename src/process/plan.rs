@@ -18,5 +18,33 @@ impl Plan<Configured, Done, Error> for FormatAssembly {
     processor.parse()
       .and_then(|p| p.target())
       .and_then(|p| p.finish())
+      .or_else(|p| p.err())
   }
+}
+
+#[cfg(test)]
+use process::config::Config;
+
+#[test]
+fn it_parses_correctly() {
+  let mut config = Config::new();
+  config.source_str("{ i }");
+
+  let result = Processor::new()
+    .configure(config.clone())
+    .and_then(FormatAssembly::run);
+
+  assert!(result.is_ok());
+}
+
+#[test]
+fn it_errors_correctly() {
+  let mut config = Config::new();
+  config.source_str("{ ! }");
+
+  let result = Processor::new()
+    .configure(config.clone())
+    .and_then(FormatAssembly::run);
+
+  assert!(result.is_err());
 }
