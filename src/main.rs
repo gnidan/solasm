@@ -1,11 +1,9 @@
-use std::io::{self, Write, BufWriter};
-use std::process;
+use std::process::exit;
 
 #[macro_use]
 extern crate clap;
 
 extern crate solasm;
-use solasm::asm::pretty::PrettyPrinter;
 use solasm::process::Processor;
 use solasm::process::config::{Config, Target};
 use solasm::process::plan::{self, Plan};
@@ -31,10 +29,14 @@ fn main() {
   }
 
 
-  Processor::new()
+  let result = Processor::new()
     .configure(config.clone())
     .and_then(plan::FormatAssembly::run);
 
+  match result {
+    Ok(_) => {exit(0)},
+    Err(_) => {exit(1)},
+  }
 
   // if result.is_err() {
   //   let err = result.err().unwrap();

@@ -10,7 +10,7 @@ pub trait ProcessState: Debug + Clone {}
 
 pub trait ErrorState: ProcessState {
   fn write<W: Write>(self, out: &mut W) {
-    write!(out, "{:?}\n", self);
+    write!(out, "{:?}\n", self).ok();
   }
 }
 
@@ -104,7 +104,7 @@ impl ProcessState for ParseError {}
 
 impl ErrorState for ParseError {
   fn write<W: Write>(self, out: &mut W) {
-    write!(out, "ParseError: {}\n", self.error);
+    write!(out, "ParseError: {}\n", self.error).ok();
   }
 }
 
