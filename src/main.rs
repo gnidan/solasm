@@ -34,8 +34,8 @@ fn main() {
     .and_then(plan::FormatAssembly::run);
 
   match result {
-    Ok(_) => {exit(0)},
-    Err(_) => {exit(1)},
+    Ok(_) => exit(0),
+    Err(_) => exit(1),
   }
 
   // if result.is_err() {

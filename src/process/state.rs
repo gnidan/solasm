@@ -1,5 +1,5 @@
 use std::fmt::Debug;
-use std::io::{Write};
+use std::io::Write;
 use config::*;
 use asm::ast::{Node, Block};
 use asm;
@@ -91,7 +91,7 @@ impl ParsedState for Parsed {
 //
 #[derive(Debug, Clone)]
 pub struct ParseError {
-  error: asm::grammar::ParseError
+  error: asm::grammar::ParseError,
 }
 
 impl ParseError {

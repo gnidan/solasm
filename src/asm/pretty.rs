@@ -233,10 +233,10 @@ impl<'v, W: Write> Visitor<'v> for PrettyPrinter<'v, W> {
 
   fn visit_control_op(&mut self, o: &'v Node<ControlOp>) {
     match **o {
-      ControlOp::Break() => {
+      ControlOp::Break => {
         write!(&mut self.out, "break").ok();
       }
-      ControlOp::Continue() => {
+      ControlOp::Continue => {
         write!(&mut self.out, "continue").ok();
       }
     }

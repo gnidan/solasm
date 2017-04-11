@@ -191,8 +191,8 @@ impl ForLoop {
 //
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub enum ControlOp {
-  Break(),
-  Continue(),
+  Break,
+  Continue,
 }
 
 // Sub-Assembly

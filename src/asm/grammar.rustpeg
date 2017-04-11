@@ -105,8 +105,8 @@ pub for_loop -> Node<ForLoop>
     }
 
 pub control_op -> Node<ControlOp>
-  = BREAK { Node::new(ControlOp::Break()) }
-  / CONTINUE { Node::new(ControlOp::Continue()) }
+  = BREAK { Node::new(ControlOp::Break) }
+  / CONTINUE { Node::new(ControlOp::Continue) }
 
 pub sub_assembly -> Node<SubAssembly>
   = ASSEMBLY i:identifier b:block { SubAssembly::new(i, b) }
