@@ -9,7 +9,7 @@ use asm;
 
 #[derive(Debug, Clone, Default)]
 pub struct Processor<S: ProcessState> {
-  state: S,
+  pub state: S,
 }
 
 pub type ProcessResult<T, E> = Result<Processor<T>, Processor<E>>;
@@ -17,45 +17,6 @@ pub type ProcessResult<T, E> = Result<Processor<T>, Processor<E>>;
 impl Processor<New> {
   pub fn new() -> Processor<New> {
     Processor { state: New, ..Default::default() }
-  }
-}
-
-impl Processor<New> {
-  pub fn configure<'a>(self, config: Config) -> ProcessResult<Configured, Error> {
-    Ok(Processor { state: Configured::new(config) })
-  }
-}
-
-impl<S: ConfiguredState> Processor<S> {
-  pub fn parse<'a>(self) -> ProcessResult<Parsed, ParseError> {
-    let config = self.clone().config();
-    let buffer = self.read(config.clone());
-    let result = asm::grammar::block(buffer.as_str());
-
-    result.and_then(|ast| Ok(Processor { state: Parsed::new(ast, config) }))
-      .or_else(|err| Err(Processor { state: ParseError::new(err) }))
-  }
-
-  pub fn config<'a>(self) -> Config {
-    self.state.unwrap_config()
-  }
-
-  pub fn read<'a>(self, config: Config) -> String {
-    match config {
-      Config { source: Source::Input, .. } => {
-        let mut buffer = String::new();
-        io::stdin().read_to_string(&mut buffer).ok();
-        buffer
-      }
-      Config { source: Source::File { filename }, .. } => {
-        let file = File::open(filename).unwrap();
-        let mut buf_reader = BufReader::new(file);
-        let mut buffer = String::new();
-        buf_reader.read_to_string(&mut buffer).ok();
-        buffer
-      }
-      Config { source: Source::Literal { source }, .. } => source,
-    }
   }
 }
 

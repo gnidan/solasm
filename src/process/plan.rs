@@ -1,6 +1,8 @@
 //! Module for assemble plan, to determine process steps
 use process::state::*;
 use process::process::{Processor, ProcessResult};
+use process::state::ConfiguredState;
+use asm::process;
 
 pub trait Plan<S, T, E>
   where S: ProcessState,
@@ -12,8 +14,8 @@ pub trait Plan<S, T, E>
 
 pub struct FormatAssembly {}
 
-impl Plan<Configured, Done, Error> for FormatAssembly {
-  fn run(processor: Processor<Configured>) -> ProcessResult<Done, Error> {
+impl<S: ConfiguredState> Plan<S, Done, Error> for FormatAssembly {
+  fn run(processor: Processor<S>) -> ProcessResult<Done, Error> {
     // processor.parse().target().finish())
     processor.parse()
       .and_then(|p| p.target())

@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 use std::io::Write;
-use config::*;
+use config::Config;
 use asm::ast::{Node, Block};
 use asm;
 
@@ -31,82 +31,6 @@ pub trait WroteOutputState: ParsedState {}
 #[derive(Debug, Clone, Default)]
 pub struct New;
 impl ProcessState for New {}
-
-
-// Configured
-//
-#[derive(Debug, Clone, Default)]
-pub struct Configured {
-  config: Config,
-}
-
-impl Configured {
-  pub fn new(config: Config) -> Configured {
-    Configured { config: config }
-  }
-}
-
-impl ProcessState for Configured {}
-
-impl ConfiguredState for Configured {
-  fn unwrap_config(self) -> Config {
-    self.config
-  }
-}
-
-
-// Parsed
-//
-#[derive(Debug, Clone)]
-pub struct Parsed {
-  config: Config,
-  ast: Node<Block>,
-}
-
-impl Parsed {
-  pub fn new(ast: Node<Block>, config: Config) -> Parsed {
-    Parsed {
-      config: config,
-      ast: ast,
-    }
-  }
-}
-
-impl ProcessState for Parsed {}
-
-impl ConfiguredState for Parsed {
-  fn unwrap_config(self) -> Config {
-    self.config
-  }
-}
-
-impl ParsedState for Parsed {
-  fn unwrap_ast(self) -> Node<Block> {
-    self.ast
-  }
-}
-
-
-// ParseError
-//
-#[derive(Debug, Clone)]
-pub struct ParseError {
-  error: asm::grammar::ParseError,
-}
-
-impl ParseError {
-  pub fn new(error: asm::grammar::ParseError) -> ParseError {
-    ParseError { error: error }
-  }
-}
-
-impl ProcessState for ParseError {}
-
-impl ErrorState for ParseError {
-  fn write<W: Write>(self, out: &mut W) {
-    write!(out, "ParseError: {}\n", self.error).ok();
-  }
-}
 
 
 // WroteAssembly
