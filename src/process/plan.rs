@@ -14,7 +14,7 @@ pub struct FormatAssembly {}
 
 impl Plan<Configured, Done, Error> for FormatAssembly {
   fn run(processor: Processor<Configured>) -> ProcessResult<Done, Error> {
-    //processor.parse().target().finish())
+    // processor.parse().target().finish())
     processor.parse()
       .and_then(|p| p.target())
       .and_then(|p| p.finish())

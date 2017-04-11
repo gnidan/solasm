@@ -1,6 +1,6 @@
 use std::fs::File;
 use std::io::{self, Read, BufReader, BufWriter};
-use std::result::{Result};
+use std::result::Result;
 use self::Result::{Ok, Err};
 
 use super::config::*;
@@ -32,7 +32,8 @@ impl<S: ConfiguredState> Processor<S> {
     let buffer = self.read(config.clone());
     let result = asm::grammar::block(buffer.as_str());
 
-    Ok(Processor { state: Parsed::new(result, config) })
+    result.and_then(|ast| Ok(Processor { state: Parsed::new(ast, config) }))
+      .or(Err(Processor { state: Error::new() }))
   }
 
   pub fn config<'a>(self) -> Config {
@@ -58,26 +59,21 @@ impl<S: ConfiguredState> Processor<S> {
   }
 }
 
-impl<S: ParseResultState> Processor<S> {
+impl<S: ParsedState> Processor<S> {
   pub fn target<'a>(self) -> ProcessResult<WroteAssembly, Error> {
     let config = self.clone().config();
-    let result = self.clone().parse_result();
+    let ast = self.clone().ast();
 
     if config.clone().targets(Target::Assembly) {
-      match result {
-        Ok(tree) => {
-          let mut out: BufWriter<_> = BufWriter::new(io::stdout());
-          asm::pretty::PrettyPrinter::print(&tree, &mut out);
-        }
-        Err(err) => {}
-      }
+      let mut out: BufWriter<_> = BufWriter::new(io::stdout());
+      asm::pretty::PrettyPrinter::print(&ast, &mut out);
     }
 
-    Ok(Processor { state: WroteAssembly::new(self.clone().parse_result(), config) })
+    Ok(Processor { state: WroteAssembly::new(self.clone().ast(), config) })
   }
 
-  pub fn parse_result(self) -> asm::grammar::ParseResult<asm::ast::Node<asm::ast::Block>> {
-    self.state.unwrap_parse_result()
+  pub fn ast(self) -> asm::ast::Node<asm::ast::Block> {
+    self.state.unwrap_ast()
   }
 }
 

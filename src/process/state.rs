@@ -14,11 +14,11 @@ pub trait ConfiguredState: ProcessState {
   fn unwrap_config(self) -> Config;
 }
 
-pub trait ParseResultState: ConfiguredState {
-  fn unwrap_parse_result(self) -> ParseResult<Node<Block>>;
+pub trait ParsedState: ConfiguredState {
+  fn unwrap_ast(self) -> Node<Block>;
 }
 
-pub trait WroteOutputState: ParseResultState {}
+pub trait WroteOutputState: ParsedState {}
 
 
 // New
@@ -55,14 +55,14 @@ impl ConfiguredState for Configured {
 #[derive(Debug, Clone)]
 pub struct Parsed {
   config: Config,
-  result: ParseResult<Node<Block>>,
+  ast: Node<Block>,
 }
 
 impl Parsed {
-  pub fn new(result: ParseResult<Node<Block>>, config: Config) -> Parsed {
+  pub fn new(ast: Node<Block>, config: Config) -> Parsed {
     Parsed {
       config: config,
-      result: result,
+      ast: ast,
     }
   }
 }
@@ -75,9 +75,9 @@ impl ConfiguredState for Parsed {
   }
 }
 
-impl ParseResultState for Parsed {
-  fn unwrap_parse_result(self) -> ParseResult<Node<Block>> {
-    self.result
+impl ParsedState for Parsed {
+  fn unwrap_ast(self) -> Node<Block> {
+    self.ast
   }
 }
 
@@ -87,14 +87,14 @@ impl ParseResultState for Parsed {
 #[derive(Debug, Clone)]
 pub struct WroteAssembly {
   config: Config,
-  result: ParseResult<Node<Block>>,
+  ast: Node<Block>,
 }
 
 impl WroteAssembly {
-  pub fn new(result: ParseResult<Node<Block>>, config: Config) -> WroteAssembly {
+  pub fn new(ast: Node<Block>, config: Config) -> WroteAssembly {
     WroteAssembly {
       config: config,
-      result: result,
+      ast: ast,
     }
   }
 }
@@ -107,9 +107,9 @@ impl ConfiguredState for WroteAssembly {
   }
 }
 
-impl ParseResultState for WroteAssembly {
-  fn unwrap_parse_result(self) -> ParseResult<Node<Block>> {
-    self.result
+impl ParsedState for WroteAssembly {
+  fn unwrap_ast(self) -> Node<Block> {
+    self.ast
   }
 }
 
