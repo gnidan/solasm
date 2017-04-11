@@ -23,7 +23,7 @@ impl Plan<Configured, Done, Error> for FormatAssembly {
 }
 
 #[cfg(test)]
-use process::config::Config;
+use config::Config;
 
 #[test]
 fn it_parses_correctly() {

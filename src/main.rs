@@ -5,7 +5,7 @@ extern crate clap;
 
 extern crate solasm;
 use solasm::process::Processor;
-use solasm::process::config::{Config, Target};
+use solasm::config::{Config, Target};
 use solasm::process::plan::{self, Plan};
 
 fn main() {

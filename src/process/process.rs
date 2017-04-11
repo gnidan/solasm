@@ -3,7 +3,7 @@ use std::io::{self, Read, BufReader, BufWriter};
 use std::result::Result;
 use self::Result::{Ok, Err};
 
-use super::config::*;
+use config::*;
 use super::state::*;
 use asm;
 

@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 use std::io::{Write};
-use process::config::*;
+use config::*;
 use asm::ast::{Node, Block};
 use asm;
 
