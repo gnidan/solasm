@@ -1,5 +1,7 @@
 use std::fs::File;
 use std::io::{self, Read, BufReader, BufWriter};
+use std::result::{Result};
+use self::Result::{Ok, Err};
 
 use super::config::*;
 use super::state::*;
@@ -10,6 +12,8 @@ pub struct Processor<S: ProcessState> {
   state: S,
 }
 
+pub type ProcessResult<T, E> = Result<Processor<T>, Processor<E>>;
+
 impl Processor<New> {
   pub fn new() -> Processor<New> {
     Processor { state: New, ..Default::default() }
@@ -17,18 +21,18 @@ impl Processor<New> {
 }
 
 impl Processor<New> {
-  pub fn configure<'a>(self, config: Config) -> Processor<Configured> {
-    Processor { state: Configured::new(config) }
+  pub fn configure<'a>(self, config: Config) -> ProcessResult<Configured, Error> {
+    Ok(Processor { state: Configured::new(config) })
   }
 }
 
 impl<S: ConfiguredState> Processor<S> {
-  pub fn parse<'a>(self) -> Processor<Parsed> {
+  pub fn parse<'a>(self) -> ProcessResult<Parsed, Error> {
     let config = self.clone().config();
     let buffer = self.read(config.clone());
     let result = asm::grammar::block(buffer.as_str());
 
-    Processor { state: Parsed::new(result, config) }
+    Ok(Processor { state: Parsed::new(result, config) })
   }
 
   pub fn config<'a>(self) -> Config {
@@ -55,7 +59,7 @@ impl<S: ConfiguredState> Processor<S> {
 }
 
 impl<S: ParseResultState> Processor<S> {
-  pub fn target<'a>(self) -> Processor<WroteAssembly> {
+  pub fn target<'a>(self) -> ProcessResult<WroteAssembly, Error> {
     let config = self.clone().config();
     let result = self.clone().parse_result();
 
@@ -69,11 +73,17 @@ impl<S: ParseResultState> Processor<S> {
       }
     }
 
-    Processor { state: WroteAssembly::new(self.clone().parse_result(), config) }
+    Ok(Processor { state: WroteAssembly::new(self.clone().parse_result(), config) })
   }
 
   pub fn parse_result(self) -> asm::grammar::ParseResult<asm::ast::Node<asm::ast::Block>> {
     self.state.unwrap_parse_result()
+  }
+}
+
+impl<S: WroteOutputState> Processor<S> {
+  pub fn finish<'a>(self) -> ProcessResult<Done, Error> {
+    Ok(Processor { state: Done {} })
   }
 }
 

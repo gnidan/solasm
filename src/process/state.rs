@@ -7,6 +7,9 @@ use asm::grammar::ParseResult;
 //
 pub trait ProcessState: Debug + Clone {}
 
+pub trait ErrorState: ProcessState {}
+
+
 pub trait ConfiguredState: ProcessState {
   fn unwrap_config(self) -> Config;
 }
@@ -14,6 +17,8 @@ pub trait ConfiguredState: ProcessState {
 pub trait ParseResultState: ConfiguredState {
   fn unwrap_parse_result(self) -> ParseResult<Node<Block>>;
 }
+
+pub trait WroteOutputState: ParseResultState {}
 
 
 // New
@@ -108,6 +113,8 @@ impl ParseResultState for WroteAssembly {
   }
 }
 
+impl WroteOutputState for WroteAssembly {}
+
 
 // Done
 //
@@ -135,3 +142,5 @@ impl Error {
 }
 
 impl ProcessState for Error {}
+
+impl ErrorState for Error {}

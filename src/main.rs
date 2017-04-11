@@ -8,6 +8,7 @@ extern crate solasm;
 use solasm::asm::pretty::PrettyPrinter;
 use solasm::process::Processor;
 use solasm::process::config::{Config, Target};
+use solasm::process::plan::{self, Plan};
 
 fn main() {
   let args = clap_app!(solasm =>
@@ -29,10 +30,11 @@ fn main() {
     config.source_file(args.value_of("filename").unwrap());
   }
 
+
   Processor::new()
     .configure(config.clone())
-    .parse()
-    .target();
+    .and_then(plan::FormatAssembly::run);
+
 
   // if result.is_err() {
   //   let err = result.err().unwrap();
