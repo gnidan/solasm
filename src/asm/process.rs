@@ -1,7 +1,7 @@
 use std::io::{self, BufReader, Write, Read};
 use std::fs::File;
 use process::{Processor, ProcessResult};
-use process::state::{New, Error, ProcessState, ErrorState, ConfiguredState, ParsedState};
+use process::state::{New, Error, ProcessState, ErrorState, HasConfig, HasAST};
 use config::{Config, Source};
 use asm;
 use asm::ast::{Node, Block};
@@ -25,13 +25,13 @@ impl Parsed {
 
 impl ProcessState for Parsed {}
 
-impl ConfiguredState for Parsed {
+impl HasConfig for Parsed {
   fn unwrap_config(self) -> Config {
     self.config
   }
 }
 
-impl ParsedState for Parsed {
+impl HasAST for Parsed {
   fn unwrap_ast(self) -> Node<Block> {
     self.ast
   }
@@ -60,7 +60,7 @@ impl ErrorState for ParseError {
 }
 
 
-impl<S: ConfiguredState> Processor<S> {
+impl<S: HasConfig> Processor<S> {
   pub fn parse<'a>(self) -> ProcessResult<Parsed, ParseError> {
     let config = self.clone().config();
     let buffer = self.read(config.clone());

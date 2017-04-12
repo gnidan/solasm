@@ -1,7 +1,7 @@
 use std::io::{self, BufReader};
 use std::fs::File;
 use process::{Processor, ProcessResult};
-use process::state::{New, Error, ProcessState, ConfiguredState};
+use process::state::{New, Error, ProcessState, HasConfig};
 use config::{Config, Source};
 
 #[derive(Debug, Clone, Default)]
@@ -17,7 +17,7 @@ impl Configured {
 
 impl ProcessState for Configured {}
 
-impl ConfiguredState for Configured {
+impl HasConfig for Configured {
   fn unwrap_config(self) -> Config {
     self.config
   }

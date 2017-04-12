@@ -15,56 +15,19 @@ pub trait ErrorState: ProcessState {
 }
 
 
-pub trait ConfiguredState: ProcessState {
+pub trait HasConfig: ProcessState {
   fn unwrap_config(self) -> Config;
 }
 
-pub trait ParsedState: ConfiguredState {
+pub trait HasAST: HasConfig {
   fn unwrap_ast(self) -> Node<Block>;
 }
-
-pub trait WroteOutputState: ParsedState {}
-
 
 // New
 //
 #[derive(Debug, Clone, Default)]
 pub struct New;
 impl ProcessState for New {}
-
-
-// WroteAssembly
-//
-#[derive(Debug, Clone)]
-pub struct WroteAssembly {
-  config: Config,
-  ast: Node<Block>,
-}
-
-impl WroteAssembly {
-  pub fn new(ast: Node<Block>, config: Config) -> WroteAssembly {
-    WroteAssembly {
-      config: config,
-      ast: ast,
-    }
-  }
-}
-
-impl ProcessState for WroteAssembly {}
-
-impl ConfiguredState for WroteAssembly {
-  fn unwrap_config(self) -> Config {
-    self.config
-  }
-}
-
-impl ParsedState for WroteAssembly {
-  fn unwrap_ast(self) -> Node<Block> {
-    self.ast
-  }
-}
-
-impl WroteOutputState for WroteAssembly {}
 
 
 // Done

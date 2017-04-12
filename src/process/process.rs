@@ -20,8 +20,8 @@ impl Processor<New> {
   }
 }
 
-impl<S: ParsedState> Processor<S> {
-  pub fn target<'a, E: ErrorState>(self) -> ProcessResult<WroteAssembly, E> {
+impl<S: HasAST> Processor<S> {
+  pub fn target<'a, E: ErrorState>(self) -> ProcessResult<Done, E> {
     let config = self.clone().config();
     let ast = self.clone().ast();
 
@@ -30,17 +30,11 @@ impl<S: ParsedState> Processor<S> {
       asm::pretty::PrettyPrinter::print(&ast, &mut out);
     }
 
-    Ok(Processor { state: WroteAssembly::new(self.clone().ast(), config) })
+    Ok(Processor { state: Done {} })
   }
 
   pub fn ast(self) -> asm::ast::Node<asm::ast::Block> {
     self.state.unwrap_ast()
-  }
-}
-
-impl<S: WroteOutputState> Processor<S> {
-  pub fn finish<'a, E: ErrorState>(self) -> ProcessResult<Done, E> {
-    Ok(Processor { state: Done {} })
   }
 }
 
