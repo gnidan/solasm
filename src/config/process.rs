@@ -16,7 +16,7 @@ impl Configured {
 impl ProcessState for Configured {}
 
 impl HasConfig for Configured {
-  fn unwrap_config(self) -> Config {
+  fn get_config(self) -> Config {
     self.config
   }
 }

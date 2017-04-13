@@ -15,15 +15,15 @@ pub trait ErrorState: ProcessState {
 
 
 pub trait HasConfig: ProcessState {
-  fn unwrap_config(self) -> Config;
+  fn get_config(self) -> Config;
 }
 
 pub trait HasSource: ProcessState {
-  fn unwrap_source(self) -> String;
+  fn get_source(self) -> String;
 }
 
 pub trait HasAST: HasConfig {
-  fn unwrap_ast(self) -> Node<Block>;
+  fn get_ast(self) -> Node<Block>;
 }
 
 // New

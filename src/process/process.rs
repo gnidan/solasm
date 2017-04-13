@@ -33,7 +33,7 @@ impl<S: HasAST> Processor<S> {
   }
 
   pub fn ast(self) -> asm::ast::Node<asm::ast::Block> {
-    self.state.unwrap_ast()
+    self.state.get_ast()
   }
 }
 

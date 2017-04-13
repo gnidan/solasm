@@ -26,13 +26,13 @@ impl Sourced {
 impl ProcessState for Sourced {}
 
 impl HasConfig for Sourced {
-  fn unwrap_config(self) -> Config {
+  fn get_config(self) -> Config {
     self.config
   }
 }
 
 impl HasSource for Sourced {
-  fn unwrap_source(self) -> String {
+  fn get_source(self) -> String {
     self.source
   }
 }
@@ -57,13 +57,13 @@ impl Parsed {
 impl ProcessState for Parsed {}
 
 impl HasConfig for Parsed {
-  fn unwrap_config(self) -> Config {
+  fn get_config(self) -> Config {
     self.config
   }
 }
 
 impl HasAST for Parsed {
-  fn unwrap_ast(self) -> Node<Block> {
+  fn get_ast(self) -> Node<Block> {
     self.ast
   }
 }
@@ -102,7 +102,7 @@ impl<S: HasConfig> Processor<S> {
   }
 
   pub fn config<'a>(self) -> Config {
-    self.state.unwrap_config()
+    self.state.get_config()
   }
 
   pub fn read<'a>(self, config: Config) -> String {
