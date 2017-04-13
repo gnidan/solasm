@@ -1,10 +1,41 @@
 use std::io::{self, BufReader, Write, Read};
 use std::fs::File;
 use process::{Processor, ProcessResult};
-use process::state::{New, Error, ProcessState, ErrorState, HasConfig, HasAST};
+use process::state::{New, Error, ProcessState, ErrorState, HasConfig, HasAST, HasSource};
 use config::{Config, Source};
 use asm;
 use asm::ast::{Node, Block};
+
+
+// Sourced
+#[derive(Debug, Clone)]
+pub struct Sourced {
+  config: Config,
+  source: String,
+}
+
+impl Sourced {
+  pub fn new(source: String, config: Config) -> Sourced {
+    Sourced {
+      config: config,
+      source: source,
+    }
+  }
+}
+
+impl ProcessState for Sourced {}
+
+impl HasConfig for Sourced {
+  fn unwrap_config(self) -> Config {
+    self.config
+  }
+}
+
+impl HasSource for Sourced {
+  fn unwrap_source(self) -> String {
+    self.source
+  }
+}
 
 // Parsed
 //

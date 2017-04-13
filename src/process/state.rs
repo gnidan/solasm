@@ -19,6 +19,10 @@ pub trait HasConfig: ProcessState {
   fn unwrap_config(self) -> Config;
 }
 
+pub trait HasSource: ProcessState {
+  fn unwrap_source(self) -> String;
+}
+
 pub trait HasAST: HasConfig {
   fn unwrap_ast(self) -> Node<Block>;
 }
