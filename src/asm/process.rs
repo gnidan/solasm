@@ -1,7 +1,7 @@
 use std::io::{self, BufReader, Write, Read};
 use std::fs::File;
 use process::{Processor, ProcessResult};
-use process::state::{New, Error, ProcessState, ErrorState, HasConfig, HasAST, HasSource};
+use process::state::{ProcessState, ErrorState, HasConfig, HasAST, HasSource};
 use config::{Config, Source};
 use asm;
 use asm::ast::{Node, Block};

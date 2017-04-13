@@ -1,5 +1,4 @@
-use std::fs::File;
-use std::io::{self, Read, BufReader, BufWriter};
+use std::io::{self, BufWriter};
 use std::result::Result;
 use self::Result::{Ok, Err};
 

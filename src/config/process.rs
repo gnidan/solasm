@@ -1,8 +1,6 @@
-use std::io::{self, BufReader};
-use std::fs::File;
 use process::{Processor, ProcessResult};
 use process::state::{New, Error, ProcessState, HasConfig};
-use config::{Config, Source};
+use config::{Config};
 
 #[derive(Debug, Clone, Default)]
 pub struct Configured {

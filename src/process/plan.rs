@@ -2,7 +2,6 @@
 use process::state::*;
 use process::process::{Processor, ProcessResult};
 use process::state::HasConfig;
-use asm::process;
 
 pub trait Plan<S, T, E>
   where S: ProcessState,

@@ -2,7 +2,6 @@ use std::fmt::Debug;
 use std::io::Write;
 use config::Config;
 use asm::ast::{Node, Block};
-use asm;
 
 // Process State Traits
 //
