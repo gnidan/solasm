@@ -1,6 +1,6 @@
 use process::{Processor, ProcessResult};
 use process::state::{New, Error, ProcessState, HasConfig};
-use config::{Config};
+use config::Config;
 
 #[derive(Debug, Clone, Default)]
 pub struct Configured {

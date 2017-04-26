@@ -1,3 +1,4 @@
+use std::cell::Cell;
 use std::str::FromStr;
 use std::vec::Vec;
 use std::ops::Deref;
@@ -8,20 +9,38 @@ use self::bigint::{U256, Uint};
 extern crate rustc_serialize;
 use self::rustc_serialize::hex::FromHex;
 
+pub type Nid = u64;
+
 // Generic Node
 //
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct Node<T> {
+  pub id: Nid,
   node: T,
 }
 
 impl<T> Node<T> {
   pub fn new(t: T) -> Node<T> {
-    Node { node: t }
+    Node {
+      node: t,
+      id: Node::<T>::next_id(),
+    }
   }
 
   pub fn unwrap(self) -> T {
     self.node
+  }
+
+  fn next_id() -> Nid {
+    thread_local!{
+      static CURRENT_ID: Cell<Nid> = Cell::new(0)
+    };
+
+    CURRENT_ID.with(|c| {
+                      let id = c.get();
+                      c.set(id + 1);
+                      id
+                    })
   }
 }
 
