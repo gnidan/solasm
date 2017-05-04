@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["SymbolTableError",""]],"struct":[["SymbolTable",""],["Variable",""]]});

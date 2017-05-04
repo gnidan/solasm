@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["plan","Module for assemble plan, to determine process steps"],["state",""],["symbols",""]],"struct":[["Processor",""]],"type":[["ProcessResult",""]]});

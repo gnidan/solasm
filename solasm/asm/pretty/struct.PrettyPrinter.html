@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `PrettyPrinter` struct in crate `solasm`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, PrettyPrinter">
+
+    <title>solasm::asm::pretty::PrettyPrinter - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc struct">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'>Struct PrettyPrinter</p><div class="block items"><ul><li><a href="#methods">Methods</a></li><li><a href="#implementations">Trait Implementations</a></li></ul></div><p class='location'><a href='../../index.html'>solasm</a>::<wbr><a href='../index.html'>asm</a>::<wbr><a href='index.html'>pretty</a></p><script>window.sidebarCurrent = {name: 'PrettyPrinter', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../../index.html'>solasm</a>::<wbr><a href='../index.html'>asm</a>::<wbr><a href='index.html'>pretty</a>::<wbr><a class="struct" href=''>PrettyPrinter</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span></span></h1>
+<pre class='rust struct'>pub struct PrettyPrinter&lt;'a, W:&nbsp;'a&gt; { /* fields omitted */ }</pre><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl&lt;'a, W:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/std/io/trait.Write.html" title="trait std::io::Write">Write</a>&gt; <a class="struct" href="../../../solasm/asm/pretty/struct.PrettyPrinter.html" title="struct solasm::asm::pretty::PrettyPrinter">PrettyPrinter</a>&lt;'a, W&gt;</code></span><span class='out-of-band'></span></h3>
+<div class='impl-items'><h4 id='method.print' class="method"><span id='print.v' class='invisible'><code>fn <a href='#method.print' class='fnname'>print</a>(block: &amp;'a <a class="struct" href="../../../solasm/asm/ast/ast/struct.Node.html" title="struct solasm::asm::ast::ast::Node">Node</a>&lt;<a class="struct" href="../../../solasm/asm/ast/ast/struct.Block.html" title="struct solasm::asm::ast::ast::Block">Block</a>&gt;, out: &amp;mut W)</code></span></h4>
+<h4 id='method.newline' class="method"><span id='newline.v' class='invisible'><code>fn <a href='#method.newline' class='fnname'>newline</a>(&amp;mut self)</code></span></h4>
+<h4 id='method.print_indent' class="method"><span id='print_indent.v' class='invisible'><code>fn <a href='#method.print_indent' class='fnname'>print_indent</a>(&amp;mut self)</code></span></h4>
+</div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl&lt;'v, W:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/std/io/trait.Write.html" title="trait std::io::Write">Write</a>&gt; <a class="trait" href="../../../solasm/asm/ast/visitor/trait.Visitor.html" title="trait solasm::asm::ast::visitor::Visitor">Visitor</a>&lt;'v&gt; for <a class="struct" href="../../../solasm/asm/pretty/struct.PrettyPrinter.html" title="struct solasm::asm::pretty::PrettyPrinter">PrettyPrinter</a>&lt;'v, W&gt;</code></span><span class='out-of-band'></span></h3>
+<div class='impl-items'><h4 id='method.visit_block' class="method"><span id='visit_block.v' class='invisible'><code>fn <a href='../../../solasm/asm/ast/visitor/trait.Visitor.html#method.visit_block' class='fnname'>visit_block</a>(&amp;mut self, b: &amp;'v <a class="struct" href="../../../solasm/asm/ast/ast/struct.Node.html" title="struct solasm::asm::ast::ast::Node">Node</a>&lt;<a class="struct" href="../../../solasm/asm/ast/ast/struct.Block.html" title="struct solasm::asm::ast::ast::Block">Block</a>&gt;)</code></span></h4>
+<h4 id='method.visit_statement' class="method"><span id='visit_statement.v' class='invisible'><code>fn <a href='../../../solasm/asm/ast/visitor/trait.Visitor.html#method.visit_statement' class='fnname'>visit_statement</a>(&amp;mut self, s: &amp;'v <a class="struct" href="../../../solasm/asm/ast/ast/struct.Node.html" title="struct solasm::asm::ast::ast::Node">Node</a>&lt;<a class="enum" href="../../../solasm/asm/ast/ast/enum.Statement.html" title="enum solasm::asm::ast::ast::Statement">Statement</a>&gt;)</code></span></h4>
+<h4 id='method.visit_function_definition' class="method"><span id='visit_function_definition.v' class='invisible'><code>fn <a href='../../../solasm/asm/ast/visitor/trait.Visitor.html#method.visit_function_definition' class='fnname'>visit_function_definition</a>(&amp;mut self, f: &amp;'v <a class="struct" href="../../../solasm/asm/ast/ast/struct.Node.html" title="struct solasm::asm::ast::ast::Node">Node</a>&lt;<a class="struct" href="../../../solasm/asm/ast/ast/struct.FunctionDefinition.html" title="struct solasm::asm::ast::ast::FunctionDefinition">FunctionDefinition</a>&gt;)</code></span></h4>
+<h4 id='method.visit_variable_declaration' class="method"><span id='visit_variable_declaration.v' class='invisible'><code>fn <a href='../../../solasm/asm/ast/visitor/trait.Visitor.html#method.visit_variable_declaration' class='fnname'>visit_variable_declaration</a>(&amp;mut self, v: &amp;'v <a class="struct" href="../../../solasm/asm/ast/ast/struct.Node.html" title="struct solasm::asm::ast::ast::Node">Node</a>&lt;<a class="struct" href="../../../solasm/asm/ast/ast/struct.VariableDeclaration.html" title="struct solasm::asm::ast::ast::VariableDeclaration">VariableDeclaration</a>&gt;)</code></span></h4>
+<h4 id='method.visit_assignment' class="method"><span id='visit_assignment.v' class='invisible'><code>fn <a href='../../../solasm/asm/ast/visitor/trait.Visitor.html#method.visit_assignment' class='fnname'>visit_assignment</a>(&amp;mut self, v: &amp;'v <a class="struct" href="../../../solasm/asm/ast/ast/struct.Node.html" title="struct solasm::asm::ast::ast::Node">Node</a>&lt;<a class="struct" href="../../../solasm/asm/ast/ast/struct.Assignment.html" title="struct solasm::asm::ast::ast::Assignment">Assignment</a>&gt;)</code></span></h4>
+<h4 id='method.visit_switch' class="method"><span id='visit_switch.v' class='invisible'><code>fn <a href='../../../solasm/asm/ast/visitor/trait.Visitor.html#method.visit_switch' class='fnname'>visit_switch</a>(&amp;mut self, f: &amp;'v <a class="struct" href="../../../solasm/asm/ast/ast/struct.Node.html" title="struct solasm::asm::ast::ast::Node">Node</a>&lt;<a class="struct" href="../../../solasm/asm/ast/ast/struct.Switch.html" title="struct solasm::asm::ast::ast::Switch">Switch</a>&gt;)</code></span></h4>
+<h4 id='method.visit_case' class="method"><span id='visit_case.v' class='invisible'><code>fn <a href='../../../solasm/asm/ast/visitor/trait.Visitor.html#method.visit_case' class='fnname'>visit_case</a>(&amp;mut self, f: &amp;'v <a class="struct" href="../../../solasm/asm/ast/ast/struct.Node.html" title="struct solasm::asm::ast::ast::Node">Node</a>&lt;<a class="struct" href="../../../solasm/asm/ast/ast/struct.Case.html" title="struct solasm::asm::ast::ast::Case">Case</a>&gt;)</code></span></h4>
+<h4 id='method.visit_for_loop' class="method"><span id='visit_for_loop.v' class='invisible'><code>fn <a href='../../../solasm/asm/ast/visitor/trait.Visitor.html#method.visit_for_loop' class='fnname'>visit_for_loop</a>(&amp;mut self, f: &amp;'v <a class="struct" href="../../../solasm/asm/ast/ast/struct.Node.html" title="struct solasm::asm::ast::ast::Node">Node</a>&lt;<a class="struct" href="../../../solasm/asm/ast/ast/struct.ForLoop.html" title="struct solasm::asm::ast::ast::ForLoop">ForLoop</a>&gt;)</code></span></h4>
+<h4 id='method.visit_control_op' class="method"><span id='visit_control_op.v' class='invisible'><code>fn <a href='../../../solasm/asm/ast/visitor/trait.Visitor.html#method.visit_control_op' class='fnname'>visit_control_op</a>(&amp;mut self, o: &amp;'v <a class="struct" href="../../../solasm/asm/ast/ast/struct.Node.html" title="struct solasm::asm::ast::ast::Node">Node</a>&lt;<a class="enum" href="../../../solasm/asm/ast/ast/enum.ControlOp.html" title="enum solasm::asm::ast::ast::ControlOp">ControlOp</a>&gt;)</code></span></h4>
+<h4 id='method.visit_sub_assembly' class="method"><span id='visit_sub_assembly.v' class='invisible'><code>fn <a href='../../../solasm/asm/ast/visitor/trait.Visitor.html#method.visit_sub_assembly' class='fnname'>visit_sub_assembly</a>(&amp;mut self, a: &amp;'v <a class="struct" href="../../../solasm/asm/ast/ast/struct.Node.html" title="struct solasm::asm::ast::ast::Node">Node</a>&lt;<a class="struct" href="../../../solasm/asm/ast/ast/struct.SubAssembly.html" title="struct solasm::asm::ast::ast::SubAssembly">SubAssembly</a>&gt;)</code></span></h4>
+<h4 id='method.visit_function_call' class="method"><span id='visit_function_call.v' class='invisible'><code>fn <a href='../../../solasm/asm/ast/visitor/trait.Visitor.html#method.visit_function_call' class='fnname'>visit_function_call</a>(&amp;mut self, c: &amp;'v <a class="struct" href="../../../solasm/asm/ast/ast/struct.Node.html" title="struct solasm::asm::ast::ast::Node">Node</a>&lt;<a class="struct" href="../../../solasm/asm/ast/ast/struct.FunctionCall.html" title="struct solasm::asm::ast::ast::FunctionCall">FunctionCall</a>&gt;)</code></span></h4>
+<h4 id='method.visit_identifier' class="method"><span id='visit_identifier.v' class='invisible'><code>fn <a href='../../../solasm/asm/ast/visitor/trait.Visitor.html#method.visit_identifier' class='fnname'>visit_identifier</a>(&amp;mut self, i: &amp;'v <a class="struct" href="../../../solasm/asm/ast/ast/struct.Node.html" title="struct solasm::asm::ast::ast::Node">Node</a>&lt;<a class="struct" href="../../../solasm/asm/ast/ast/struct.Identifier.html" title="struct solasm::asm::ast::ast::Identifier">Identifier</a>&gt;)</code></span></h4>
+<h4 id='method.visit_string_literal' class="method"><span id='visit_string_literal.v' class='invisible'><code>fn <a href='../../../solasm/asm/ast/visitor/trait.Visitor.html#method.visit_string_literal' class='fnname'>visit_string_literal</a>(&amp;mut self, s: &amp;'v <a class="struct" href="../../../solasm/asm/ast/ast/struct.Node.html" title="struct solasm::asm::ast::ast::Node">Node</a>&lt;<a class="struct" href="../../../solasm/asm/ast/ast/struct.StringLiteral.html" title="struct solasm::asm::ast::ast::StringLiteral">StringLiteral</a>&gt;)</code></span></h4>
+<h4 id='method.visit_hex_literal' class="method"><span id='visit_hex_literal.v' class='invisible'><code>fn <a href='../../../solasm/asm/ast/visitor/trait.Visitor.html#method.visit_hex_literal' class='fnname'>visit_hex_literal</a>(&amp;mut self, x: &amp;'v <a class="struct" href="../../../solasm/asm/ast/ast/struct.Node.html" title="struct solasm::asm::ast::ast::Node">Node</a>&lt;<a class="struct" href="../../../solasm/asm/ast/ast/struct.HexLiteral.html" title="struct solasm::asm::ast::ast::HexLiteral">HexLiteral</a>&gt;)</code></span></h4>
+<h4 id='method.visit_hex_number' class="method"><span id='visit_hex_number.v' class='invisible'><code>fn <a href='../../../solasm/asm/ast/visitor/trait.Visitor.html#method.visit_hex_number' class='fnname'>visit_hex_number</a>(&amp;mut self, x: &amp;'v <a class="struct" href="../../../solasm/asm/ast/ast/struct.Node.html" title="struct solasm::asm::ast::ast::Node">Node</a>&lt;<a class="struct" href="../../../solasm/asm/ast/ast/struct.HexNumber.html" title="struct solasm::asm::ast::ast::HexNumber">HexNumber</a>&gt;)</code></span></h4>
+<h4 id='method.visit_dec_number' class="method"><span id='visit_dec_number.v' class='invisible'><code>fn <a href='../../../solasm/asm/ast/visitor/trait.Visitor.html#method.visit_dec_number' class='fnname'>visit_dec_number</a>(&amp;mut self, n: &amp;'v <a class="struct" href="../../../solasm/asm/ast/ast/struct.Node.html" title="struct solasm::asm::ast::ast::Node">Node</a>&lt;<a class="struct" href="../../../solasm/asm/ast/ast/struct.DecNumber.html" title="struct solasm::asm::ast::ast::DecNumber">DecNumber</a>&gt;)</code></span></h4>
+<h4 id='method.push' class="method"><span id='push.v' class='invisible'><code>fn <a href='../../../solasm/asm/ast/visitor/trait.Visitor.html#method.push' class='fnname'>push</a>(&amp;mut self, _: <a class="type" href="../../../solasm/asm/ast/ast/type.Nid.html" title="type solasm::asm::ast::ast::Nid">Nid</a>)</code></span></h4>
+<h4 id='method.pop' class="method"><span id='pop.v' class='invisible'><code>fn <a href='../../../solasm/asm/ast/visitor/trait.Visitor.html#method.pop' class='fnname'>pop</a>(&amp;mut self)</code></span></h4>
+<h4 id='method.visit_expression' class="method"><span id='visit_expression.v' class='invisible'><code>fn <a href='../../../solasm/asm/ast/visitor/trait.Visitor.html#method.visit_expression' class='fnname'>visit_expression</a>(&amp;mut self, e: &amp;'v <a class="struct" href="../../../solasm/asm/ast/ast/struct.Node.html" title="struct solasm::asm::ast::ast::Node">Node</a>&lt;<a class="enum" href="../../../solasm/asm/ast/ast/enum.Expression.html" title="enum solasm::asm::ast::ast::Expression">Expression</a>&gt;)</code></span></h4>
+<h4 id='method.visit_literal' class="method"><span id='visit_literal.v' class='invisible'><code>fn <a href='../../../solasm/asm/ast/visitor/trait.Visitor.html#method.visit_literal' class='fnname'>visit_literal</a>(&amp;mut self, l: &amp;'v <a class="struct" href="../../../solasm/asm/ast/ast/struct.Node.html" title="struct solasm::asm::ast::ast::Node">Node</a>&lt;<a class="enum" href="../../../solasm/asm/ast/ast/enum.Literal.html" title="enum solasm::asm::ast::ast::Literal">Literal</a>&gt;)</code></span></h4>
+</div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../../";
+        window.currentCrate = "solasm";
+    </script>
+    <script src="../../../jquery.js"></script>
+    <script src="../../../main.js"></script>
+    <script defer src="../../../search-index.js"></script>
+</body>
+</html>

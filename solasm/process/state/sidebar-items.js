@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Done",""],["Error",""],["New",""]],"trait":[["ErrorState",""],["HasAST",""],["HasConfig",""],["HasSource",""],["ProcessState",""]]});

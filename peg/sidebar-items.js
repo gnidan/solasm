@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["cargo_build","Compile the PEG grammar in the specified filename to cargo's OUT_DIR. Errors are emitted to stderr and terminate the process."],["compile","Compile a peg grammar to Rust source"]]});
